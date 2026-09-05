@@ -1,0 +1,12 @@
+{
+  "id": "{DD739BDB-F2DD-4DF6-899C-A6078E7D077B}",
+  "author": "taloriko",
+  "name": "EV Tile",
+  "url": "https://github.com/taloriko/IPSymconEVTile",
+  "compatibility": {
+    "version": "8.1"
+  },
+  "version": "1.0",
+  "build": 0,
+  "date": 1788636360
+}

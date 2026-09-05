@@ -6,7 +6,7 @@ EV Tile stellt typische Daten eines Elektrofahrzeugs in einer kompakten, respons
 
 ## Funktionsumfang
 
-- Ladezustand mit Batterieanzeige
+- Ladezustand mit Batterieanzeige im Ladebereich
 - Reichweite und Kilometerstand
 - Verriegelungsstatus
 - Türen, Fenster, Kofferraum, Motorhaube, Schiebedach und Licht
@@ -82,7 +82,9 @@ Für die automatische Erkennung werden zusätzlich typische deutsche und englisc
 
 ## Bedienung
 
-Besitzt die zugeordnete Variable eine Symcon-Aktion, kann die Kachel unterstützte Funktionen wie Laden oder Klimatisierung direkt auslösen. Die Bedienung kann in der Konfiguration vollständig deaktiviert werden.
+Besitzt die zugeordnete Variable eine Symcon-Aktion, kann die Kachel unterstützte Funktionen wie Laden oder Klimatisierung direkt auslösen. Bedienbare Funktionen werden über eigene kleine Aktionsschaltflächen angezeigt. Die übrigen Kachelflächen sind reine Anzeigeelemente und lösen bei Berührung keine Fahrzeugaktion aus.
+
+Die Bedienung kann in der Konfiguration vollständig deaktiviert werden.
 
 ## Darstellung
 
@@ -90,7 +92,11 @@ Die Kachel verwendet eine native HTML-Kachel über das Symcon Tile SDK. Änderun
 
 Beim Erzeugen der Kachel werden die Variablenzuordnungen erneut direkt aus der aktuellen Konfiguration und der Quellinstanz aufgelöst. Dadurch ist die Initialdarstellung nicht von einem zuvor gespeicherten Zuordnungszustand abhängig.
 
-Die Fahrzeugdarstellung ist herstellerneutral. Zustände wie offene Türen, Fenster, Kofferraum, Motorhaube, Schiebedach oder eingeschaltetes Licht werden direkt am Fahrzeug hervorgehoben.
+Die Fahrzeugdarstellung ist herstellerneutral und quer ausgerichtet, damit auf Smartphones weniger vertikaler Platz benötigt wird. Die Batterieanzeige ist Bestandteil des Ladeblocks und liegt nicht über der Fahrzeuggrafik.
+
+Zustände wie offene Türen, Fenster, Kofferraum, Motorhaube, Schiebedach oder eingeschaltetes Licht werden direkt am Fahrzeug hervorgehoben.
+
+Eingehende Visualisierungsnachrichten werden mit dem zuletzt bekannten vollständigen Fahrzeugzustand zusammengeführt. Teilnachrichten bei Bedienaktionen können dadurch nicht die übrigen Anzeigen leeren.
 
 ## Architekturhinweis
 

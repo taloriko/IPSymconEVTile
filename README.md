@@ -15,8 +15,9 @@ EV Tile stellt typische Daten eines Elektrofahrzeugs in einer kompakten, respons
 - Klimatisierung und Solltemperatur
 - letzte Aktualisierung
 - optionale Bedienung von Laden und Klimatisierung über vorhandene Variablenaktionen
-- automatische Zuordnung bekannter Variablen-Idents
-- manuelle Variablenzuordnung für andere Fahrzeugmodule
+- automatische Zuordnung bekannter Variablen-Idents und Variablennamen
+- sichtbarer Zuordnungsstatus in der Instanzkonfiguration
+- manuelle Variablenzuordnung für nicht automatisch erkannte Datenpunkte
 - responsive Darstellung für Smartphone und Desktop
 
 Diagnose-, API- und Hersteller-spezifische Verwaltungsdaten sind nicht Bestandteil der Kachel.
@@ -39,7 +40,15 @@ Anschließend eine Instanz **EV Tile** anlegen.
 
 ## Konfiguration
 
-Zuerst wird die Fahrzeug- bzw. Quellinstanz ausgewählt. Das Modul versucht anschließend, bekannte Variablen über ihre Idents automatisch zuzuordnen.
+Zuerst wird die Fahrzeug- bzw. Quellinstanz ausgewählt. Nach **Übernehmen** wertet das Modul die untergeordneten Variablen aus und ordnet bekannte Datenpunkte automatisch zu.
+
+Der Zuordnungsstatus wird direkt im Konfigurationsformular angezeigt:
+
+- 🟢 **Automatisch erkannt** – keine manuelle Eingabe erforderlich
+- 🔵 **Manuell zugeordnet** – die manuelle Auswahl überschreibt nur diesen einen Datenpunkt
+- 🟠 **Fehlt** – dieser Datenpunkt kann bei Bedarf manuell zugeordnet werden
+
+Die gleichen Markierungen stehen auch direkt an den Auswahlfeldern der manuellen Variablenzuordnung.
 
 Unterstützte Standard-Idents sind unter anderem:
 
@@ -69,7 +78,7 @@ ParkingState
 LastUpdate
 ```
 
-Nicht automatisch erkannte Datenpunkte können manuell zugeordnet werden.
+Für die automatische Erkennung werden zusätzlich typische deutsche und englische Variablennamen berücksichtigt. Damit können auch Fahrzeugmodule ohne identische Idents automatisch erkannt werden.
 
 ## Bedienung
 
@@ -78,6 +87,8 @@ Besitzt die zugeordnete Variable eine Symcon-Aktion, kann die Kachel unterstütz
 ## Darstellung
 
 Die Kachel verwendet eine native HTML-Kachel über das Symcon Tile SDK. Änderungen der Quellvariablen werden über Symcon-Nachrichten überwacht und ohne zyklisches Polling an die Kachel übertragen.
+
+Beim Erzeugen der Kachel werden die Variablenzuordnungen erneut direkt aus der aktuellen Konfiguration und der Quellinstanz aufgelöst. Dadurch ist die Initialdarstellung nicht von einem zuvor gespeicherten Zuordnungszustand abhängig.
 
 Die Fahrzeugdarstellung ist herstellerneutral. Zustände wie offene Türen, Fenster, Kofferraum, Motorhaube, Schiebedach oder eingeschaltetes Licht werden direkt am Fahrzeug hervorgehoben.
 

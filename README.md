@@ -6,7 +6,7 @@ EV Tile stellt typische Daten eines Elektrofahrzeugs in einer kompakten, respons
 
 ## Funktionsumfang
 
-- Ladezustand mit Batterieanzeige im Ladebereich
+- Ladezustand als integrierter 20-Segment-Balken im Ladebereich
 - Reichweite und Kilometerstand
 - Verriegelungsstatus
 - Türen, Fenster, Kofferraum, Motorhaube, Schiebedach und Licht
@@ -16,7 +16,7 @@ EV Tile stellt typische Daten eines Elektrofahrzeugs in einer kompakten, respons
 - letzte Aktualisierung
 - optionale Bedienung von Laden und Klimatisierung über vorhandene Variablenaktionen
 - automatische Zuordnung bekannter Variablen-Idents und Variablennamen
-- sichtbarer Zuordnungsstatus in der Instanzkonfiguration
+- kompakter Zuordnungsstatus in der Instanzkonfiguration
 - manuelle Variablenzuordnung für nicht automatisch erkannte Datenpunkte
 - responsive Darstellung für Smartphone und Desktop
 
@@ -42,13 +42,21 @@ Anschließend eine Instanz **EV Tile** anlegen.
 
 Zuerst wird die Fahrzeug- bzw. Quellinstanz ausgewählt. Nach **Übernehmen** wertet das Modul die untergeordneten Variablen aus und ordnet bekannte Datenpunkte automatisch zu.
 
-Der Zuordnungsstatus wird direkt im Konfigurationsformular angezeigt:
+Der Bereich **Zuordnungsstatus** zeigt nur die Anzahl der Zuordnungen:
 
-- 🟢 **Automatisch erkannt** – keine manuelle Eingabe erforderlich
-- 🔵 **Manuell zugeordnet** – die manuelle Auswahl überschreibt nur diesen einen Datenpunkt
-- 🟠 **Fehlt** – dieser Datenpunkt kann bei Bedarf manuell zugeordnet werden
+- 🟢 **Automatisch erkannt** – Anzahl automatisch gefundener Datenpunkte
+- 🔵 **Manuell zugeordnet** – Anzahl manuell überschriebener Datenpunkte
+- 🟠 **Fehlt** – Anzahl noch nicht zugeordneter Datenpunkte
 
-Die gleichen Markierungen stehen auch direkt an den Auswahlfeldern der manuellen Variablenzuordnung.
+In der **Manuellen Variablenzuordnung** wird direkt am jeweiligen Feld angezeigt, welche Variable die automatische Erkennung gefunden hat. Beispiel:
+
+```text
+🟢 Ladezustand (Auto #12345)
+🔵 Kennzeichen (Auto #12346)
+🟠 Ladeart (Auto —)
+```
+
+Eine manuelle Auswahl überschreibt ausschließlich den jeweiligen Datenpunkt. Die übrigen Zuordnungen bleiben automatisch.
 
 Unterstützte Standard-Idents sind unter anderem:
 
@@ -92,7 +100,7 @@ Die Kachel verwendet eine native HTML-Kachel über das Symcon Tile SDK. Änderun
 
 Beim Erzeugen der Kachel werden die Variablenzuordnungen erneut direkt aus der aktuellen Konfiguration und der Quellinstanz aufgelöst. Dadurch ist die Initialdarstellung nicht von einem zuvor gespeicherten Zuordnungszustand abhängig.
 
-Die Fahrzeugdarstellung ist herstellerneutral und quer ausgerichtet, damit auf Smartphones weniger vertikaler Platz benötigt wird. Die Batterieanzeige ist Bestandteil des Ladeblocks und liegt nicht über der Fahrzeuggrafik.
+Die Fahrzeugdarstellung ist herstellerneutral und quer ausgerichtet, damit auf Smartphones weniger vertikaler Platz benötigt wird. Der Ladezustand wird als eigene, in den Ladeblock integrierte Zeile dargestellt. Der Balken besteht aus 20 Segmenten und bildet damit Schritte von jeweils 5 Prozent ab. Die Segmentfarbe folgt dem Ladezustand von Rot über Orange und Hellgrün bis Dunkelgrün.
 
 Zustände wie offene Türen, Fenster, Kofferraum, Motorhaube, Schiebedach oder eingeschaltetes Licht werden direkt am Fahrzeug hervorgehoben.
 

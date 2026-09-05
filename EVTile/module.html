@@ -1,19 +1,19 @@
 <div id="evtile" class="evtile">
   <div class="meta-row">
-    <div><strong id="vehicleName">Elektrofahrzeug</strong><span id="plate" class="plate"></span><span class="muted"> · </span><span id="range">—</span><span class="muted"> Reichweite</span></div>
-    <div id="updated" class="muted">Aktualisiert —</div>
+    <div class="vehicle-meta"><strong id="vehicleName">Elektrofahrzeug</strong><span id="plate" class="plate"></span><span class="muted"> · </span><span id="range">—</span><span class="muted"> Reichweite</span></div>
+    <div id="updated" class="muted updated">Aktualisiert —</div>
   </div>
 
-  <div class="main-grid">
-    <div class="vehicle-wrap">
-      <svg class="vehicle" viewBox="0 0 220 380" role="img" aria-label="Elektrofahrzeug von oben">
-        <defs>
-          <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#eef1f3"/>
-            <stop offset="0.5" stop-color="#b8c0c7"/>
-            <stop offset="1" stop-color="#e9edef"/>
-          </linearGradient>
-        </defs>
+  <div class="vehicle-strip">
+    <svg class="vehicle" viewBox="0 0 380 220" role="img" aria-label="Elektrofahrzeug von oben">
+      <defs>
+        <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#eef1f3"/>
+          <stop offset="0.5" stop-color="#b8c0c7"/>
+          <stop offset="1" stop-color="#e9edef"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(380 0) rotate(90)">
         <ellipse cx="110" cy="194" rx="78" ry="167" class="shadow"/>
         <rect x="23" y="85" width="20" height="67" rx="8" class="wheel"/>
         <rect x="177" y="85" width="20" height="67" rx="8" class="wheel"/>
@@ -31,27 +31,23 @@
         <path id="rightWindow" d="M158 119 L152 171 L167 146Z" class="windowMark"/>
         <path id="leftLight" d="M53 69 L73 56" class="light"/>
         <path id="rightLight" d="M167 69 L147 56" class="light"/>
-      </svg>
+      </g>
+    </svg>
+  </div>
 
-      <div class="battery" aria-label="Batteriestatus">
-        <div class="battery-shell">
-          <div class="battery-bars">
-            <i></i><i></i><i></i><i></i>
-          </div>
-          <strong id="soc">—%</strong>
-          <small id="limit">Limit —</small>
-        </div>
+  <div class="charge-card">
+    <div class="charge-head">
+      <div class="battery-shell" aria-label="Batteriestatus">
+        <div class="battery-bars"><i></i><i></i><i></i><i></i></div>
+        <div class="battery-copy"><strong id="soc">—%</strong><small id="limit">Limit —</small></div>
       </div>
+      <div class="status-copy">
+        <strong id="chargeTitle">Ladestatus unbekannt</strong>
+        <small id="chargeSub">—</small>
+      </div>
+      <button id="chargeAction" class="action-button" type="button" aria-label="Laden schalten" title="Laden schalten">↯</button>
     </div>
-
-    <div class="charge-card">
-      <button id="chargeButton" class="status-button" type="button">
-        <span id="chargeIcon" class="round-icon">↯</span>
-        <span class="status-copy">
-          <strong id="chargeTitle">Ladestatus unbekannt</strong>
-          <small id="chargeSub">—</small>
-        </span>
-      </button>
+    <div class="charge-data">
       <div class="data-line"><span>Ladeleistung</span><strong id="chargePower">—</strong></div>
       <div class="data-line"><span>Zeit bis voll</span><strong id="fullAt">—</strong></div>
       <div class="data-line"><span>Ladelimit</span><strong id="chargeLimit">—</strong></div>
@@ -62,27 +58,26 @@
   <div id="lockRow" class="lock-row"><span class="lock-icon">▣</span><strong>Fahrzeugstatus unbekannt</strong></div>
 
   <div class="footer-grid">
-    <button id="climateButton" class="footer-button" type="button">
-      <span class="round-icon small">○</span>
-      <strong id="climate">Klima: —</strong>
-    </button>
+    <div class="climate-info"><span class="round-icon small">○</span><strong id="climate">Klima: —</strong></div>
+    <button id="climateAction" class="action-button small-action" type="button" aria-label="Klimatisierung schalten" title="Klimatisierung schalten">↻</button>
     <div class="mileage"><small>km</small><strong id="mileage">—</strong></div>
   </div>
 </div>
 
 <style>
 :root { color-scheme: light dark; }
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; overflow: hidden; background: transparent; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ev-fg, inherit); }
-.evtile { width: 100%; min-height: 100%; padding: 34px 14px 12px; --ok:#32a85b; --warn:#df921b; --muted:rgba(127,127,127,.85); --line:rgba(127,127,127,.22); --card:rgba(127,127,127,.075); }
-.meta-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:0 2px 10px; border-bottom:1px solid var(--line); font-size:13px; }
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; overflow:hidden; background:transparent; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ev-fg,inherit); }
+.evtile { width:100%; min-height:100%; padding:34px 14px 12px; --ok:#32a85b; --warn:#df921b; --muted:rgba(127,127,127,.85); --line:rgba(127,127,127,.22); --card:rgba(127,127,127,.075); touch-action:pan-y; }
+.meta-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:0 2px 9px; border-bottom:1px solid var(--line); font-size:13px; }
 .meta-row > div { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vehicle-meta { flex:1 1 auto; }
+.updated { flex:0 0 auto; }
 .muted { color:var(--muted); }
 .plate { display:inline-block; margin-left:6px; padding:1px 5px; border:1px solid var(--line); border-radius:5px; color:var(--muted); font-size:10px; vertical-align:1px; }
 .plate:empty { display:none; }
-.main-grid { display:grid; grid-template-columns:minmax(150px, .9fr) minmax(180px, 1.1fr); gap:14px; align-items:center; padding:14px 0; }
-.vehicle-wrap { position:relative; min-height:350px; display:flex; align-items:center; justify-content:center; }
-.vehicle { width:min(100%, 205px); height:auto; overflow:visible; }
+.vehicle-strip { height:190px; display:flex; align-items:center; justify-content:center; padding:7px 0 3px; overflow:hidden; }
+.vehicle { width:min(100%,380px); height:auto; max-height:185px; overflow:visible; }
 .shadow { fill:rgba(0,0,0,.08); filter:blur(6px); }
 .wheel { fill:#22282c; }
 .body { fill:url(#body); stroke:var(--ok); stroke-width:2.5; transition:stroke .2s; }
@@ -94,51 +89,63 @@ html, body { margin: 0; padding: 0; overflow: hidden; background: transparent; f
 .alert { stroke:var(--warn)!important; }
 #sunroof.alert { fill:rgba(223,146,27,.27); }
 #bonnet.alert, #trunk.alert { fill:rgba(223,146,27,.2); }
-.battery { position:absolute; left:50%; top:54%; transform:translate(-50%,-50%); }
-.battery-shell { position:relative; width:104px; min-height:80px; padding:10px 10px 7px; border-radius:10px; background:rgba(248,249,250,.91); color:#171b20; border:2px solid rgba(80,85,90,.28); box-shadow:0 3px 10px rgba(0,0,0,.12); text-align:center; }
-.battery-shell:after { content:""; position:absolute; right:-8px; top:27px; width:7px; height:25px; border-radius:0 4px 4px 0; background:rgba(80,85,90,.38); }
-.battery-bars { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:4px; }
-.battery-bars i { display:block; height:17px; border-radius:3px; background:#e5e7eb; }
-.battery-shell strong { display:block; font-size:26px; line-height:1; }
-.battery-shell small { display:block; margin-top:5px; color:#5f6670; font-size:10px; }
-.charge-card { padding:12px 14px; border-radius:18px; background:var(--card); min-width:0; }
-.status-button, .footer-button { appearance:none; border:0; background:transparent; color:inherit; padding:0; margin:0; width:100%; text-align:left; font:inherit; }
-.status-button { display:flex; align-items:center; gap:10px; min-height:55px; padding-bottom:9px; border-bottom:1px solid var(--line); }
-.status-button.enabled, .footer-button.enabled { cursor:pointer; }
-.round-icon { width:43px; height:43px; min-width:43px; border-radius:50%; display:grid; place-items:center; background:rgba(127,127,127,.11); font-size:22px; }
-.round-icon.small { width:38px; height:38px; min-width:38px; font-size:20px; }
+.charge-card { padding:11px 13px; border-radius:18px; background:var(--card); min-width:0; }
+.charge-head { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:11px; align-items:center; padding-bottom:10px; border-bottom:1px solid var(--line); }
+.battery-shell { position:relative; width:116px; min-height:64px; padding:8px 9px 7px; border-radius:10px; background:rgba(248,249,250,.91); color:#171b20; border:2px solid rgba(80,85,90,.28); box-shadow:0 2px 8px rgba(0,0,0,.10); }
+.battery-shell:after { content:""; position:absolute; right:-7px; top:20px; width:6px; height:22px; border-radius:0 4px 4px 0; background:rgba(80,85,90,.38); }
+.battery-bars { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; }
+.battery-bars i { display:block; height:14px; border-radius:3px; background:#e5e7eb; }
+.battery-copy { display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-top:6px; }
+.battery-copy strong { font-size:21px; line-height:1; }
+.battery-copy small { color:#5f6670; font-size:9px; white-space:nowrap; }
 .status-copy { display:flex; flex-direction:column; min-width:0; }
-.status-copy strong { color:var(--warn); font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.status-copy strong { color:var(--warn); font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .status-copy small { margin-top:2px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.data-line { display:flex; justify-content:space-between; gap:12px; align-items:center; min-height:38px; border-bottom:1px solid var(--line); font-size:13px; }
-.data-line:last-child { border-bottom:0; }
+.action-button { appearance:none; width:40px; height:40px; border:1px solid var(--line); border-radius:50%; background:rgba(127,127,127,.10); color:inherit; font:inherit; font-size:19px; display:grid; place-items:center; opacity:.35; pointer-events:none; touch-action:manipulation; }
+.action-button.enabled { opacity:1; pointer-events:auto; cursor:pointer; }
+.action-button:active { transform:scale(.94); }
+.charge-data { display:grid; grid-template-columns:1fr 1fr; column-gap:18px; }
+.data-line { display:flex; justify-content:space-between; gap:8px; align-items:center; min-height:36px; border-bottom:1px solid var(--line); font-size:13px; }
+.data-line:nth-last-child(-n+2) { border-bottom:0; }
 .data-line span { color:var(--muted); white-space:nowrap; }
 .data-line strong { text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.lock-row { display:flex; justify-content:center; align-items:center; gap:9px; min-height:68px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--ok); }
+.lock-row { display:flex; justify-content:center; align-items:center; gap:9px; min-height:56px; border-bottom:1px solid var(--line); color:var(--ok); }
 .lock-row.warning { color:var(--warn); }
-.lock-icon { font-size:20px; }
-.footer-grid { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding-top:10px; }
-.footer-button { display:flex; align-items:center; gap:9px; min-width:0; }
-.footer-button strong { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.mileage { text-align:right; white-space:nowrap; min-width:98px; }
+.lock-icon { font-size:18px; }
+.footer-grid { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:9px; align-items:center; padding-top:9px; }
+.climate-info { display:flex; align-items:center; gap:8px; min-width:0; }
+.climate-info strong { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.round-icon.small { width:34px; height:34px; min-width:34px; border-radius:50%; display:grid; place-items:center; background:rgba(127,127,127,.11); font-size:18px; }
+.small-action { width:34px; height:34px; font-size:16px; }
+.mileage { text-align:right; white-space:nowrap; min-width:96px; }
 .mileage small { display:block; color:var(--muted); line-height:1; margin-bottom:2px; }
 .mileage strong { font-size:16px; }
 @media (max-width:560px) {
   .evtile { padding-left:12px; padding-right:12px; }
-  .main-grid { grid-template-columns:minmax(132px,.92fr) minmax(160px,1.08fr); gap:8px; }
-  .vehicle-wrap { min-height:330px; }
-  .charge-card { padding:10px; border-radius:15px; }
-  .status-copy strong { font-size:14px; }
-  .data-line { font-size:12px; gap:6px; }
-  .round-icon { width:38px; height:38px; min-width:38px; }
-  .battery-shell { width:90px; min-height:73px; }
-  .battery-shell strong { font-size:23px; }
+  .meta-row { font-size:12px; gap:7px; }
+  .vehicle-strip { height:162px; }
+  .vehicle { max-height:158px; }
+  .charge-card { padding:9px 10px; border-radius:15px; }
+  .charge-head { gap:8px; }
+  .battery-shell { width:98px; min-height:60px; }
+  .battery-copy strong { font-size:19px; }
+  .status-copy strong { font-size:13px; }
+  .status-copy small { font-size:11px; }
+  .charge-data { column-gap:10px; }
+  .data-line { font-size:11px; min-height:33px; gap:4px; }
+  .action-button { width:36px; height:36px; font-size:17px; }
 }
 @media (max-width:390px) {
-  .main-grid { grid-template-columns:1fr; }
-  .vehicle-wrap { min-height:310px; }
-  .vehicle { width:170px; }
-  .charge-card { margin-top:-6px; }
+  .vehicle-strip { height:148px; }
+  .vehicle { max-height:144px; }
+  .charge-head { grid-template-columns:92px minmax(0,1fr) 32px; gap:6px; }
+  .battery-shell { width:92px; padding:7px; }
+  .action-button { width:32px; height:32px; font-size:15px; }
+  .charge-data { grid-template-columns:1fr; }
+  .data-line, .data-line:nth-last-child(-n+2) { border-bottom:1px solid var(--line); }
+  .data-line:last-child { border-bottom:0; }
+  .footer-grid { grid-template-columns:minmax(0,1fr) auto auto; gap:6px; }
+  .mileage { min-width:82px; }
 }
 </style>
 
@@ -155,15 +162,18 @@ function socColor(value) {
   const stops=[[0,[220,64,64]],[10,[220,64,64]],[25,[245,158,11]],[80,[123,207,117]],[100,[19,122,66]]];
   for(let i=1;i<stops.length;i++) {
     if(s<=stops[i][0]) {
-      const [x0,c0]=stops[i-1], [x1,c1]=stops[i]; const t=(s-x0)/(x1-x0 || 1);
-      const c=c0.map((v,j)=>Math.round(v+(c1[j]-v)*t)); return `rgb(${c.join(',')})`;
+      const [x0,c0]=stops[i-1], [x1,c1]=stops[i];
+      const t=(s-x0)/(x1-x0 || 1);
+      const c=c0.map((v,j)=>Math.round(v+(c1[j]-v)*t));
+      return `rgb(${c.join(',')})`;
     }
   }
   return 'rgb(19,122,66)';
 }
 
 function updateBattery(soc) {
-  const s=pct(soc); setText('soc', s===null ? null : `${Math.round(s)}%`);
+  const s=pct(soc);
+  setText('soc', s===null ? null : `${Math.round(s)}%`);
   const bars=[...document.querySelectorAll('.battery-bars i')];
   const count=s===null ? 0 : (s<=0 ? 0 : Math.min(4, Math.ceil(s/25)));
   const color=socColor(s);
@@ -199,18 +209,15 @@ function renderVehicle(s) {
   setAlert('leftLight', s.lightsOn); setAlert('rightLight', s.lightsOn);
 }
 
-function handleMessage(data) {
-  if(typeof data === 'string') { try { data=JSON.parse(data); } catch(_) { return; } }
+function renderState(data) {
   if(!data || typeof data !== 'object') return;
-  evState=data;
-
   setText('vehicleName', data.title, 'Elektrofahrzeug');
   setText('plate', data.licensePlate, '');
   setText('range', data.range);
   setText('updated', data.lastUpdate ? `Aktualisiert ${formatTime(data.lastUpdate)}` : 'Aktualisiert —');
   updateBattery(data.soc);
   setText('limit', data.targetSoc!==null && data.targetSoc!==undefined ? `Limit ${Math.round(Number(data.targetSoc))}%` : null, 'Limit —');
-  setText('chargeLimit', data.targetSocFormatted || (data.targetSoc!==null ? `${Math.round(Number(data.targetSoc))}%` : ''));
+  setText('chargeLimit', data.targetSocFormatted || (data.targetSoc!==null && data.targetSoc!==undefined ? `${Math.round(Number(data.targetSoc))}%` : ''));
   setText('chargeMode', data.chargeMode);
 
   const [title,sub]=statusText(data.chargingState);
@@ -222,27 +229,55 @@ function handleMessage(data) {
   const validFullTime=bool(data.charging) && fullTs > Math.floor(Date.now()/1000);
   setText('fullAt', validFullTime ? formatTime(fullTs) : '—');
 
-  const chargeButton=q('chargeButton');
-  if(chargeButton) {
-    chargeButton.classList.toggle('enabled', !!data.controls?.charging);
-    chargeButton.onclick=data.controls?.charging ? ()=>requestAction('ToggleCharging', !bool(evState?.charging)) : null;
+  const chargeAction=q('chargeAction');
+  if(chargeAction) {
+    const enabled=!!data.controls?.charging;
+    chargeAction.classList.toggle('enabled', enabled);
+    chargeAction.disabled=!enabled;
+    chargeAction.onclick=enabled ? (event)=>{ event.stopPropagation(); requestAction('ToggleCharging', !bool(evState?.charging)); } : null;
   }
 
   const lock=q('lockRow');
   if(lock) {
     const known=data.locked !== null && data.locked !== undefined;
     lock.classList.toggle('warning', known && !data.locked);
-    lock.querySelector('strong').textContent=!known ? 'Fahrzeugstatus unbekannt' : (data.locked ? 'Fahrzeug verriegelt' : 'Fahrzeug entriegelt');
+    const text=lock.querySelector('strong');
+    if(text) text.textContent=!known ? 'Fahrzeugstatus unbekannt' : (data.locked ? 'Fahrzeug verriegelt' : 'Fahrzeug entriegelt');
   }
 
   const temp=data.targetTemperature || '—';
   setText('climate', `Klima: ${bool(data.climate) ? 'An' : 'Aus'} · ${temp}`);
-  const climateButton=q('climateButton');
-  if(climateButton) {
-    climateButton.classList.toggle('enabled', !!data.controls?.climate);
-    climateButton.onclick=data.controls?.climate ? ()=>requestAction('ToggleClimate', !bool(evState?.climate)) : null;
+  const climateAction=q('climateAction');
+  if(climateAction) {
+    const enabled=!!data.controls?.climate;
+    climateAction.classList.toggle('enabled', enabled);
+    climateAction.disabled=!enabled;
+    climateAction.onclick=enabled ? (event)=>{ event.stopPropagation(); requestAction('ToggleClimate', !bool(evState?.climate)); } : null;
   }
   setText('mileage', data.mileage);
   renderVehicle(data);
 }
+
+function handleMessage(data) {
+  if(typeof data === 'string') { try { data=JSON.parse(data); } catch(_) { return; } }
+  if(!data || typeof data !== 'object' || Array.isArray(data)) return;
+
+  // Symcon kann bei Interaktionen auch Teilnachrichten liefern. Diese dürfen
+  // den bereits angezeigten vollständigen Fahrzeugzustand nicht überschreiben.
+  const previous=evState || {};
+  evState={
+    ...previous,
+    ...data,
+    controls:{...(previous.controls || {}), ...(data.controls || {})}
+  };
+  renderState(evState);
+}
+
+document.addEventListener('pointerup', (event)=>{
+  if(!event.target.closest('.action-button') && evState) {
+    requestAnimationFrame(()=>renderState(evState));
+  }
+});
+window.addEventListener('pageshow', ()=>{ if(evState) renderState(evState); });
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && evState) renderState(evState); });
 </script>

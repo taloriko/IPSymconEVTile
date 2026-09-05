@@ -127,8 +127,7 @@ final class EVTile extends IPSModuleStrict
         parent::ApplyChanges();
         $this->SetVisualizationType(1);
 
-        $previous = $this->readResolvedVariables();
-        foreach (array_unique(array_values($previous)) as $id) {
+        foreach (array_unique(array_values($this->readResolvedVariables())) as $id) {
             if ($id > 0) {
                 $this->UnregisterMessage($id, VM_UPDATE);
             }
@@ -171,8 +170,9 @@ final class EVTile extends IPSModuleStrict
             return '{}';
         }
 
+        $automatic = $this->resolveAutomaticVariables();
         $resolved = $this->resolveVariables();
-        $status = $this->assignmentStatus($resolved);
+        $status = $this->assignmentStatus($resolved, $automatic);
         $this->patchAssignmentCaptions($form, $status);
         $this->insertAssignmentStatusPanel($form, $status);
 
@@ -222,17 +222,22 @@ final class EVTile extends IPSModuleStrict
 
     private function resolveVariables(): array
     {
-        $catalog = $this->collectVariableCatalog($this->ReadPropertyInteger('SourceInstanceID'));
-        $resolved = [];
-
+        $resolved = $this->resolveAutomaticVariables();
         foreach (self::ROLE_PROPERTIES as $role => $property) {
             $manual = $this->ReadPropertyInteger($property);
             if ($manual > 0 && IPS_VariableExists($manual)) {
                 $resolved[$role] = $manual;
-                continue;
             }
+        }
+        return $resolved;
+    }
 
-            $resolved[$role] = 0;
+    private function resolveAutomaticVariables(): array
+    {
+        $catalog = $this->collectVariableCatalog($this->ReadPropertyInteger('SourceInstanceID'));
+        $resolved = array_fill_keys(array_keys(self::ROLE_PROPERTIES), 0);
+
+        foreach (self::ROLE_PROPERTIES as $role => $_property) {
             foreach (self::ROLE_ALIASES[$role] ?? [] as $alias) {
                 $key = strtolower($alias);
                 if (isset($catalog['ident'][$key])) {
@@ -298,26 +303,29 @@ final class EVTile extends IPSModuleStrict
         return preg_replace('/[^a-z0-9]+/', '', $value) ?? '';
     }
 
-    private function assignmentStatus(array $resolved): array
+    private function assignmentStatus(array $resolved, array $automatic): array
     {
         $status = [];
         foreach (self::ROLE_PROPERTIES as $role => $property) {
             $manual = $this->ReadPropertyInteger($property);
-            $id = (int) ($resolved[$role] ?? 0);
+            $autoId = (int) ($automatic[$role] ?? 0);
+            $effectiveId = (int) ($resolved[$role] ?? 0);
+
             if ($manual > 0 && IPS_VariableExists($manual)) {
                 $mode = 'manual';
-                $id = $manual;
-            } elseif ($id > 0 && IPS_VariableExists($id)) {
+                $effectiveId = $manual;
+            } elseif ($effectiveId > 0 && IPS_VariableExists($effectiveId)) {
                 $mode = 'auto';
             } else {
                 $mode = 'missing';
-                $id = 0;
+                $effectiveId = 0;
             }
 
             $status[$role] = [
                 'mode' => $mode,
-                'id' => $id,
-                'name' => $id > 0 ? IPS_GetName($id) : ''
+                'id' => $effectiveId,
+                'autoId' => $autoId,
+                'name' => $effectiveId > 0 ? IPS_GetName($effectiveId) : ''
             ];
         }
         return $status;
@@ -337,7 +345,9 @@ final class EVTile extends IPSModuleStrict
                     $role = $propertyToRole[$name];
                     $mode = (string) ($status[$role]['mode'] ?? 'missing');
                     $marker = $mode === 'auto' ? '🟢' : ($mode === 'manual' ? '🔵' : '🟠');
-                    $item['caption'] = $marker . ' ' . $this->Translate(self::ROLE_LABELS[$role] ?? $role);
+                    $autoId = (int) ($status[$role]['autoId'] ?? 0);
+                    $autoHint = $autoId > 0 ? ' (Auto #' . $autoId . ')' : ' (Auto —)';
+                    $item['caption'] = $marker . ' ' . $this->Translate(self::ROLE_LABELS[$role] ?? $role) . $autoHint;
                 }
 
                 if (isset($item['items']) && is_array($item['items'])) {
@@ -365,26 +375,11 @@ final class EVTile extends IPSModuleStrict
 
     private function insertAssignmentStatusPanel(array &$form, array $status): void
     {
-        $auto = [];
-        $manual = [];
-        $missing = [];
-
-        foreach ($status as $role => $entry) {
-            $label = $this->Translate(self::ROLE_LABELS[$role] ?? $role);
-            $name = (string) ($entry['name'] ?? '');
-            $id = (int) ($entry['id'] ?? 0);
-            $detail = $name !== '' ? $label . ' → ' . $name . ' (#' . $id . ')' : $label;
-
-            switch ($entry['mode'] ?? 'missing') {
-                case 'auto':
-                    $auto[] = $detail;
-                    break;
-                case 'manual':
-                    $manual[] = $detail;
-                    break;
-                default:
-                    $missing[] = $label;
-                    break;
+        $counts = ['auto' => 0, 'manual' => 0, 'missing' => 0];
+        foreach ($status as $entry) {
+            $mode = (string) ($entry['mode'] ?? 'missing');
+            if (isset($counts[$mode])) {
+                $counts[$mode]++;
             }
         }
 
@@ -398,22 +393,10 @@ final class EVTile extends IPSModuleStrict
             'caption' => $this->Translate('Assignment status'),
             'expanded' => true,
             'items' => [
-                [
-                    'type' => 'Label',
-                    'caption' => $this->Translate('Source') . ': ' . $sourceText
-                ],
-                [
-                    'type' => 'Label',
-                    'caption' => '🟢 ' . $this->Translate('Automatically detected') . ' (' . count($auto) . '): ' . ($auto !== [] ? implode(', ', $auto) : '—')
-                ],
-                [
-                    'type' => 'Label',
-                    'caption' => '🔵 ' . $this->Translate('Manually assigned') . ' (' . count($manual) . '): ' . ($manual !== [] ? implode(', ', $manual) : '—')
-                ],
-                [
-                    'type' => 'Label',
-                    'caption' => '🟠 ' . $this->Translate('Missing') . ' (' . count($missing) . '): ' . ($missing !== [] ? implode(', ', $missing) : '—')
-                ]
+                ['type' => 'Label', 'caption' => $this->Translate('Source') . ': ' . $sourceText],
+                ['type' => 'Label', 'caption' => '🟢 ' . $this->Translate('Automatically detected') . ': ' . $counts['auto']],
+                ['type' => 'Label', 'caption' => '🔵 ' . $this->Translate('Manually assigned') . ': ' . $counts['manual']],
+                ['type' => 'Label', 'caption' => '🟠 ' . $this->Translate('Missing') . ': ' . $counts['missing']]
             ]
         ];
 
@@ -443,8 +426,6 @@ final class EVTile extends IPSModuleStrict
 
     private function buildState(): array
     {
-        // Immer frisch auflösen. Damit ist die Kachel nicht von einem eventuell
-        // veralteten Attributzustand abhängig, wenn Symcon sie neu erzeugt.
         $ids = $this->resolveVariables();
         $source = $this->ReadPropertyInteger('SourceInstanceID');
         $fallbackName = $source > 0 && IPS_ObjectExists($source) ? IPS_GetName($source) : 'Elektrofahrzeug';

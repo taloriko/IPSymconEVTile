@@ -1,0 +1,102 @@
+{
+  "elements": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "Data source",
+      "expanded": true,
+      "items": [
+        {
+          "type": "SelectInstance",
+          "name": "SourceInstanceID",
+          "caption": "Vehicle instance"
+        },
+        {
+          "type": "Label",
+          "caption": "Variables with common vehicle identifiers are assigned automatically. Manual assignments below override automatic detection."
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Operation",
+      "expanded": true,
+      "items": [
+        {
+          "type": "CheckBox",
+          "name": "EnableControls",
+          "caption": "Allow charging and climate control from the tile"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Manual variable assignment",
+      "expanded": false,
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Only assign variables that cannot be detected automatically. Unused values may remain empty."
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "StateOfChargeID", "caption": "State of charge", "validVariableTypes": [1, 2]},
+            {"type": "SelectVariable", "name": "RangeID", "caption": "Range", "validVariableTypes": [1, 2]},
+            {"type": "SelectVariable", "name": "MileageID", "caption": "Mileage", "validVariableTypes": [1, 2]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "LockedID", "caption": "Locked", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "DoorsOpenID", "caption": "Doors open", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "WindowsOpenID", "caption": "Windows open", "validVariableTypes": [0]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "TrunkOpenID", "caption": "Trunk open", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "BonnetOpenID", "caption": "Bonnet open", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "SunroofOpenID", "caption": "Sunroof open", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "LightsOnID", "caption": "Lights on", "validVariableTypes": [0]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "ChargingID", "caption": "Charging", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "ChargePowerID", "caption": "Charging power", "validVariableTypes": [1, 2]},
+            {"type": "SelectVariable", "name": "TargetSOCID", "caption": "Charging limit", "validVariableTypes": [1, 2]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "ChargingStateID", "caption": "Charging state", "validVariableTypes": [3]},
+            {"type": "SelectVariable", "name": "ChargeTypeID", "caption": "Charge type", "validVariableTypes": [3]},
+            {"type": "SelectVariable", "name": "ChargeModeID", "caption": "Charging mode", "validVariableTypes": [1, 3]},
+            {"type": "SelectVariable", "name": "FullyChargedAtID", "caption": "Fully charged at", "validVariableTypes": [1]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "ClimateID", "caption": "Air conditioning", "validVariableTypes": [0]},
+            {"type": "SelectVariable", "name": "TargetTemperatureID", "caption": "Target temperature", "validVariableTypes": [1, 2]}
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {"type": "SelectVariable", "name": "VehicleNameID", "caption": "Vehicle name", "validVariableTypes": [3]},
+            {"type": "SelectVariable", "name": "LicensePlateID", "caption": "License plate", "validVariableTypes": [3]},
+            {"type": "SelectVariable", "name": "ParkingStateID", "caption": "Parking state", "validVariableTypes": [3]},
+            {"type": "SelectVariable", "name": "LastUpdateID", "caption": "Last update", "validVariableTypes": [1]}
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

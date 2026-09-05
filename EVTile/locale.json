@@ -1,0 +1,36 @@
+{
+  "translations": {
+    "de": {
+      "Data source": "Datenquelle",
+      "Vehicle instance": "Fahrzeug-Instanz",
+      "Variables with common vehicle identifiers are assigned automatically. Manual assignments below override automatic detection.": "Variablen mit üblichen Fahrzeug-Idents werden automatisch zugeordnet. Manuelle Zuordnungen überschreiben die automatische Erkennung.",
+      "Operation": "Bedienung",
+      "Allow charging and climate control from the tile": "Laden und Klimatisierung über die Kachel bedienen",
+      "Manual variable assignment": "Manuelle Variablenzuordnung",
+      "Only assign variables that cannot be detected automatically. Unused values may remain empty.": "Nur Variablen zuordnen, die nicht automatisch erkannt werden. Nicht benötigte Werte dürfen leer bleiben.",
+      "State of charge": "Ladezustand",
+      "Range": "Reichweite",
+      "Mileage": "Kilometerstand",
+      "Locked": "Verriegelt",
+      "Doors open": "Türen offen",
+      "Windows open": "Fenster offen",
+      "Trunk open": "Kofferraum offen",
+      "Bonnet open": "Motorhaube offen",
+      "Sunroof open": "Schiebedach offen",
+      "Lights on": "Licht an",
+      "Charging": "Laden",
+      "Charging power": "Ladeleistung",
+      "Charging limit": "Ladelimit",
+      "Charging state": "Ladestatus",
+      "Charge type": "Ladeart",
+      "Charging mode": "Lademodus",
+      "Fully charged at": "Voraussichtlich voll",
+      "Air conditioning": "Klimatisierung",
+      "Target temperature": "Klima Solltemperatur",
+      "Vehicle name": "Fahrzeugname",
+      "License plate": "Kennzeichen",
+      "Parking state": "Parkstatus",
+      "Last update": "Letzte Aktualisierung"
+    }
+  }
+}

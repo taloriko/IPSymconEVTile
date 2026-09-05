@@ -37,16 +37,18 @@
 
   <div class="charge-card">
     <div class="charge-head">
-      <div class="battery-shell" aria-label="Batteriestatus">
-        <div class="battery-bars"><i></i><i></i><i></i><i></i></div>
-        <div class="battery-copy"><strong id="soc">—%</strong><small id="limit">Limit —</small></div>
-      </div>
       <div class="status-copy">
         <strong id="chargeTitle">Ladestatus unbekannt</strong>
         <small id="chargeSub">—</small>
       </div>
       <button id="chargeAction" class="action-button" type="button" aria-label="Laden schalten" title="Laden schalten">↯</button>
     </div>
+
+    <div class="soc-row" aria-label="Ladezustand">
+      <div class="soc-copy"><span>Ladezustand</span><strong id="soc">—%</strong></div>
+      <div id="socSegments" class="soc-segments"></div>
+    </div>
+
     <div class="charge-data">
       <div class="data-line"><span>Ladeleistung</span><strong id="chargePower">—</strong></div>
       <div class="data-line"><span>Zeit bis voll</span><strong id="fullAt">—</strong></div>
@@ -90,20 +92,19 @@ html, body { margin:0; padding:0; overflow:hidden; background:transparent; font-
 #sunroof.alert { fill:rgba(223,146,27,.27); }
 #bonnet.alert, #trunk.alert { fill:rgba(223,146,27,.2); }
 .charge-card { padding:11px 13px; border-radius:18px; background:var(--card); min-width:0; }
-.charge-head { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:11px; align-items:center; padding-bottom:10px; border-bottom:1px solid var(--line); }
-.battery-shell { position:relative; width:116px; min-height:64px; padding:8px 9px 7px; border-radius:10px; background:rgba(248,249,250,.91); color:#171b20; border:2px solid rgba(80,85,90,.28); box-shadow:0 2px 8px rgba(0,0,0,.10); }
-.battery-shell:after { content:""; position:absolute; right:-7px; top:20px; width:6px; height:22px; border-radius:0 4px 4px 0; background:rgba(80,85,90,.38); }
-.battery-bars { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; }
-.battery-bars i { display:block; height:14px; border-radius:3px; background:#e5e7eb; }
-.battery-copy { display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-top:6px; }
-.battery-copy strong { font-size:21px; line-height:1; }
-.battery-copy small { color:#5f6670; font-size:9px; white-space:nowrap; }
+.charge-head { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:11px; align-items:center; padding-bottom:9px; }
 .status-copy { display:flex; flex-direction:column; min-width:0; }
 .status-copy strong { color:var(--warn); font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .status-copy small { margin-top:2px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .action-button { appearance:none; width:40px; height:40px; border:1px solid var(--line); border-radius:50%; background:rgba(127,127,127,.10); color:inherit; font:inherit; font-size:19px; display:grid; place-items:center; opacity:.35; pointer-events:none; touch-action:manipulation; }
 .action-button.enabled { opacity:1; pointer-events:auto; cursor:pointer; }
 .action-button:active { transform:scale(.94); }
+.soc-row { padding:9px 0 11px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.soc-copy { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:7px; font-size:13px; }
+.soc-copy span { color:var(--muted); }
+.soc-copy strong { font-size:18px; line-height:1; }
+.soc-segments { display:grid; grid-template-columns:repeat(20,minmax(0,1fr)); gap:2px; width:100%; }
+.soc-segments i { display:block; height:10px; border-radius:2px; background:rgba(127,127,127,.16); transition:background .2s ease; }
 .charge-data { display:grid; grid-template-columns:1fr 1fr; column-gap:18px; }
 .data-line { display:flex; justify-content:space-between; gap:8px; align-items:center; min-height:36px; border-bottom:1px solid var(--line); font-size:13px; }
 .data-line:nth-last-child(-n+2) { border-bottom:0; }
@@ -127,10 +128,12 @@ html, body { margin:0; padding:0; overflow:hidden; background:transparent; font-
   .vehicle { max-height:158px; }
   .charge-card { padding:9px 10px; border-radius:15px; }
   .charge-head { gap:8px; }
-  .battery-shell { width:98px; min-height:60px; }
-  .battery-copy strong { font-size:19px; }
   .status-copy strong { font-size:13px; }
   .status-copy small { font-size:11px; }
+  .soc-copy { font-size:12px; }
+  .soc-copy strong { font-size:17px; }
+  .soc-segments { gap:1.5px; }
+  .soc-segments i { height:9px; }
   .charge-data { column-gap:10px; }
   .data-line { font-size:11px; min-height:33px; gap:4px; }
   .action-button { width:36px; height:36px; font-size:17px; }
@@ -138,8 +141,6 @@ html, body { margin:0; padding:0; overflow:hidden; background:transparent; font-
 @media (max-width:390px) {
   .vehicle-strip { height:148px; }
   .vehicle { max-height:144px; }
-  .charge-head { grid-template-columns:92px minmax(0,1fr) 32px; gap:6px; }
-  .battery-shell { width:92px; padding:7px; }
   .action-button { width:32px; height:32px; font-size:15px; }
   .charge-data { grid-template-columns:1fr; }
   .data-line, .data-line:nth-last-child(-n+2) { border-bottom:1px solid var(--line); }
@@ -171,13 +172,18 @@ function socColor(value) {
   return 'rgb(19,122,66)';
 }
 
-function updateBattery(soc) {
+function updateSoc(soc) {
   const s=pct(soc);
   setText('soc', s===null ? null : `${Math.round(s)}%`);
-  const bars=[...document.querySelectorAll('.battery-bars i')];
-  const count=s===null ? 0 : (s<=0 ? 0 : Math.min(4, Math.ceil(s/25)));
+  const host=q('socSegments');
+  if(!host) return;
+  if(host.children.length !== 20) {
+    host.replaceChildren(...Array.from({length:20},()=>document.createElement('i')));
+  }
+  const segments=[...host.children];
+  const active=s===null ? 0 : Math.min(20, Math.ceil(s/5));
   const color=socColor(s);
-  bars.forEach((bar,i)=>bar.style.background=i<count ? color : '#e5e7eb');
+  segments.forEach((segment,index)=>segment.style.background=index<active ? color : 'rgba(127,127,127,.16)');
 }
 
 function statusText(state) {
@@ -215,8 +221,7 @@ function renderState(data) {
   setText('plate', data.licensePlate, '');
   setText('range', data.range);
   setText('updated', data.lastUpdate ? `Aktualisiert ${formatTime(data.lastUpdate)}` : 'Aktualisiert —');
-  updateBattery(data.soc);
-  setText('limit', data.targetSoc!==null && data.targetSoc!==undefined ? `Limit ${Math.round(Number(data.targetSoc))}%` : null, 'Limit —');
+  updateSoc(data.soc);
   setText('chargeLimit', data.targetSocFormatted || (data.targetSoc!==null && data.targetSoc!==undefined ? `${Math.round(Number(data.targetSoc))}%` : ''));
   setText('chargeMode', data.chargeMode);
 
@@ -261,9 +266,6 @@ function renderState(data) {
 function handleMessage(data) {
   if(typeof data === 'string') { try { data=JSON.parse(data); } catch(_) { return; } }
   if(!data || typeof data !== 'object' || Array.isArray(data)) return;
-
-  // Symcon kann bei Interaktionen auch Teilnachrichten liefern. Diese dürfen
-  // den bereits angezeigten vollständigen Fahrzeugzustand nicht überschreiben.
   const previous=evState || {};
   evState={
     ...previous,

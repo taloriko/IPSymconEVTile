@@ -1,0 +1,15 @@
+{
+  "id": "{07A7C7B9-9540-4636-ABB5-2BA4A1336B13}",
+  "name": "EV Tile",
+  "type": 3,
+  "vendor": "taloriko",
+  "aliases": [
+    "Elektrofahrzeug Kachel",
+    "Electric Vehicle Tile"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "EVTILE",
+  "url": "https://github.com/taloriko/IPSymconEVTile/blob/main/README.md"
+}

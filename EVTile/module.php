@@ -30,6 +30,32 @@ final class EVTile extends IPSModuleStrict
         'lastUpdate' => 'LastUpdateID'
     ];
 
+    private const ROLE_LABELS = [
+        'soc' => 'State of charge',
+        'range' => 'Range',
+        'mileage' => 'Mileage',
+        'locked' => 'Locked',
+        'doorsOpen' => 'Doors open',
+        'windowsOpen' => 'Windows open',
+        'trunkOpen' => 'Trunk open',
+        'bonnetOpen' => 'Bonnet open',
+        'sunroofOpen' => 'Sunroof open',
+        'lightsOn' => 'Lights on',
+        'charging' => 'Charging',
+        'chargePower' => 'Charging power',
+        'targetSoc' => 'Charging limit',
+        'chargingState' => 'Charging state',
+        'chargeType' => 'Charge type',
+        'chargeMode' => 'Charging mode',
+        'fullyChargedAt' => 'Fully charged at',
+        'climate' => 'Air conditioning',
+        'targetTemperature' => 'Target temperature',
+        'vehicleName' => 'Vehicle name',
+        'licensePlate' => 'License plate',
+        'parkingState' => 'Parking state',
+        'lastUpdate' => 'Last update'
+    ];
+
     private const ROLE_ALIASES = [
         'soc' => ['StateOfCharge', 'SOC', 'BatterySOC', 'BatteryLevel'],
         'range' => ['Range', 'RemainingRange', 'ElectricRange'],
@@ -54,6 +80,32 @@ final class EVTile extends IPSModuleStrict
         'licensePlate' => ['LicensePlate', 'RegistrationPlate'],
         'parkingState' => ['ParkingState'],
         'lastUpdate' => ['LastUpdate', 'UpdatedAt']
+    ];
+
+    private const ROLE_NAME_ALIASES = [
+        'soc' => ['Ladezustand', 'State of charge', 'SOC'],
+        'range' => ['Reichweite', 'Range'],
+        'mileage' => ['Kilometerstand', 'Mileage', 'Odometer'],
+        'locked' => ['Verriegelt', 'Locked'],
+        'doorsOpen' => ['Türen offen', 'Tueren offen', 'Doors open'],
+        'windowsOpen' => ['Fenster offen', 'Windows open'],
+        'trunkOpen' => ['Kofferraum offen', 'Trunk open', 'Boot open'],
+        'bonnetOpen' => ['Motorhaube offen', 'Bonnet open', 'Hood open'],
+        'sunroofOpen' => ['Schiebedach offen', 'Sunroof open', 'Roof open'],
+        'lightsOn' => ['Licht an', 'Lights on'],
+        'charging' => ['Laden', 'Charging'],
+        'chargePower' => ['Ladeleistung', 'Charging power'],
+        'targetSoc' => ['Ladelimit', 'Charging limit', 'Charge limit'],
+        'chargingState' => ['Ladestatus', 'Charging state'],
+        'chargeType' => ['Ladeart', 'Charge type'],
+        'chargeMode' => ['Lademodus', 'Charging mode'],
+        'fullyChargedAt' => ['Voraussichtlich voll', 'Fully charged at'],
+        'climate' => ['Klimatisierung', 'Air conditioning', 'Climate'],
+        'targetTemperature' => ['Klima Solltemperatur', 'Solltemperatur', 'Target temperature'],
+        'vehicleName' => ['Fahrzeugname', 'Vehicle name'],
+        'licensePlate' => ['Kennzeichen', 'License plate'],
+        'parkingState' => ['Parkstatus', 'Parking state'],
+        'lastUpdate' => ['Letzte Aktualisierung', 'Last update']
     ];
 
     public function Create(): void
@@ -107,6 +159,26 @@ final class EVTile extends IPSModuleStrict
         }
     }
 
+    public function GetConfigurationForm(): string
+    {
+        $json = @file_get_contents(__DIR__ . '/form.json');
+        if ($json === false) {
+            return '{}';
+        }
+
+        $form = json_decode($json, true);
+        if (!is_array($form)) {
+            return '{}';
+        }
+
+        $resolved = $this->resolveVariables();
+        $status = $this->assignmentStatus($resolved);
+        $this->patchAssignmentCaptions($form, $status);
+        $this->insertAssignmentStatusPanel($form, $status);
+
+        return json_encode($form, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data): void
     {
         if ($Message !== VM_UPDATE) {
@@ -150,7 +222,7 @@ final class EVTile extends IPSModuleStrict
 
     private function resolveVariables(): array
     {
-        $byIdent = $this->collectVariablesByIdent($this->ReadPropertyInteger('SourceInstanceID'));
+        $catalog = $this->collectVariableCatalog($this->ReadPropertyInteger('SourceInstanceID'));
         $resolved = [];
 
         foreach (self::ROLE_PROPERTIES as $role => $property) {
@@ -163,8 +235,20 @@ final class EVTile extends IPSModuleStrict
             $resolved[$role] = 0;
             foreach (self::ROLE_ALIASES[$role] ?? [] as $alias) {
                 $key = strtolower($alias);
-                if (isset($byIdent[$key])) {
-                    $resolved[$role] = $byIdent[$key];
+                if (isset($catalog['ident'][$key])) {
+                    $resolved[$role] = $catalog['ident'][$key];
+                    break;
+                }
+            }
+
+            if ($resolved[$role] > 0) {
+                continue;
+            }
+
+            foreach (self::ROLE_NAME_ALIASES[$role] ?? [] as $alias) {
+                $key = $this->normalizeLookupKey($alias);
+                if ($key !== '' && isset($catalog['name'][$key])) {
+                    $resolved[$role] = $catalog['name'][$key];
                     break;
                 }
             }
@@ -173,29 +257,167 @@ final class EVTile extends IPSModuleStrict
         return $resolved;
     }
 
-    private function collectVariablesByIdent(int $root): array
+    private function collectVariableCatalog(int $root): array
     {
+        $result = ['ident' => [], 'name' => []];
         if ($root <= 0 || !IPS_ObjectExists($root)) {
-            return [];
+            return $result;
         }
 
-        $result = [];
         $queue = [[$root, 0]];
         while ($queue !== []) {
             [$parent, $depth] = array_shift($queue);
             foreach (IPS_GetChildrenIDs($parent) as $child) {
                 $object = IPS_GetObject($child);
-                if (($object['ObjectType'] ?? -1) === 2) {
+                $type = (int) ($object['ObjectType'] ?? -1);
+                if ($type === 2) {
                     $ident = trim((string) ($object['ObjectIdent'] ?? ''));
                     if ($ident !== '') {
-                        $result[strtolower($ident)] = $child;
+                        $result['ident'][strtolower($ident)] = $child;
                     }
-                } elseif ($depth < 1 && in_array(($object['ObjectType'] ?? -1), [0, 1], true)) {
+
+                    $nameKey = $this->normalizeLookupKey(IPS_GetName($child));
+                    if ($nameKey !== '') {
+                        $result['name'][$nameKey] = $child;
+                    }
+                } elseif ($depth < 2 && in_array($type, [0, 1, 3], true)) {
                     $queue[] = [$child, $depth + 1];
                 }
             }
         }
+
         return $result;
+    }
+
+    private function normalizeLookupKey(string $value): string
+    {
+        $value = strtr($value, [
+            'Ä' => 'Ae', 'Ö' => 'Oe', 'Ü' => 'Ue', 'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss'
+        ]);
+        $value = strtolower(trim($value));
+        return preg_replace('/[^a-z0-9]+/', '', $value) ?? '';
+    }
+
+    private function assignmentStatus(array $resolved): array
+    {
+        $status = [];
+        foreach (self::ROLE_PROPERTIES as $role => $property) {
+            $manual = $this->ReadPropertyInteger($property);
+            $id = (int) ($resolved[$role] ?? 0);
+            if ($manual > 0 && IPS_VariableExists($manual)) {
+                $mode = 'manual';
+                $id = $manual;
+            } elseif ($id > 0 && IPS_VariableExists($id)) {
+                $mode = 'auto';
+            } else {
+                $mode = 'missing';
+                $id = 0;
+            }
+
+            $status[$role] = [
+                'mode' => $mode,
+                'id' => $id,
+                'name' => $id > 0 ? IPS_GetName($id) : ''
+            ];
+        }
+        return $status;
+    }
+
+    private function patchAssignmentCaptions(array &$form, array $status): void
+    {
+        $propertyToRole = array_flip(self::ROLE_PROPERTIES);
+        $walk = function (array &$items) use (&$walk, $status, $propertyToRole): void {
+            foreach ($items as &$item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+
+                $name = (string) ($item['name'] ?? '');
+                if (($item['type'] ?? '') === 'SelectVariable' && isset($propertyToRole[$name])) {
+                    $role = $propertyToRole[$name];
+                    $mode = (string) ($status[$role]['mode'] ?? 'missing');
+                    $marker = $mode === 'auto' ? '🟢' : ($mode === 'manual' ? '🔵' : '🟠');
+                    $item['caption'] = $marker . ' ' . $this->Translate(self::ROLE_LABELS[$role] ?? $role);
+                }
+
+                if (isset($item['items']) && is_array($item['items'])) {
+                    $walk($item['items']);
+                }
+            }
+        };
+        $walk($form['elements']);
+
+        foreach ($form['elements'] as &$element) {
+            if (($element['type'] ?? '') !== 'ExpansionPanel') {
+                continue;
+            }
+            if (($element['caption'] ?? '') === 'Manual variable assignment') {
+                $missing = 0;
+                foreach ($status as $entry) {
+                    if (($entry['mode'] ?? '') === 'missing') {
+                        $missing++;
+                    }
+                }
+                $element['expanded'] = $missing > 0;
+            }
+        }
+    }
+
+    private function insertAssignmentStatusPanel(array &$form, array $status): void
+    {
+        $auto = [];
+        $manual = [];
+        $missing = [];
+
+        foreach ($status as $role => $entry) {
+            $label = $this->Translate(self::ROLE_LABELS[$role] ?? $role);
+            $name = (string) ($entry['name'] ?? '');
+            $id = (int) ($entry['id'] ?? 0);
+            $detail = $name !== '' ? $label . ' → ' . $name . ' (#' . $id . ')' : $label;
+
+            switch ($entry['mode'] ?? 'missing') {
+                case 'auto':
+                    $auto[] = $detail;
+                    break;
+                case 'manual':
+                    $manual[] = $detail;
+                    break;
+                default:
+                    $missing[] = $label;
+                    break;
+            }
+        }
+
+        $source = $this->ReadPropertyInteger('SourceInstanceID');
+        $sourceText = ($source > 0 && IPS_ObjectExists($source))
+            ? IPS_GetName($source) . ' (#' . $source . ')'
+            : $this->Translate('No vehicle instance selected');
+
+        $panel = [
+            'type' => 'ExpansionPanel',
+            'caption' => $this->Translate('Assignment status'),
+            'expanded' => true,
+            'items' => [
+                [
+                    'type' => 'Label',
+                    'caption' => $this->Translate('Source') . ': ' . $sourceText
+                ],
+                [
+                    'type' => 'Label',
+                    'caption' => '🟢 ' . $this->Translate('Automatically detected') . ' (' . count($auto) . '): ' . ($auto !== [] ? implode(', ', $auto) : '—')
+                ],
+                [
+                    'type' => 'Label',
+                    'caption' => '🔵 ' . $this->Translate('Manually assigned') . ' (' . count($manual) . '): ' . ($manual !== [] ? implode(', ', $manual) : '—')
+                ],
+                [
+                    'type' => 'Label',
+                    'caption' => '🟠 ' . $this->Translate('Missing') . ' (' . count($missing) . '): ' . ($missing !== [] ? implode(', ', $missing) : '—')
+                ]
+            ]
+        ];
+
+        array_splice($form['elements'], 1, 0, [$panel]);
     }
 
     private function readResolvedVariables(): array
@@ -221,7 +443,9 @@ final class EVTile extends IPSModuleStrict
 
     private function buildState(): array
     {
-        $ids = $this->readResolvedVariables();
+        // Immer frisch auflösen. Damit ist die Kachel nicht von einem eventuell
+        // veralteten Attributzustand abhängig, wenn Symcon sie neu erzeugt.
+        $ids = $this->resolveVariables();
         $source = $this->ReadPropertyInteger('SourceInstanceID');
         $fallbackName = $source > 0 && IPS_ObjectExists($source) ? IPS_GetName($source) : 'Elektrofahrzeug';
 
@@ -314,7 +538,7 @@ final class EVTile extends IPSModuleStrict
 
     private function requestRoleAction(string $role, bool|int|float $value): void
     {
-        $ids = $this->readResolvedVariables();
+        $ids = $this->resolveVariables();
         $id = (int) ($ids[$role] ?? 0);
         if (!$this->canControl($id)) {
             return;

@@ -31,11 +31,7 @@ trait EVTileObjectTreeTrait
                 continue;
             }
 
-            foreach ($roles as $definition) {
-                $role = array_search($definition, $this->roleDefinitions(), true);
-                if (!is_string($role)) {
-                    continue;
-                }
+            foreach ($roles as $role => $definition) {
                 $targetId = (int) ($resolved[$role] ?? 0);
                 if ($targetId > 0 && IPS_VariableExists($targetId)) {
                     $this->ensureLink($groupId, $definition, $targetId, $managedTargets);

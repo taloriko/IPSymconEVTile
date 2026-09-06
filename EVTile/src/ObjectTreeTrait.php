@@ -15,14 +15,24 @@ trait EVTileObjectTreeTrait
         $managedTargets = $this->readManagedLinkTargets();
 
         foreach ($this->groupDefinitions() as $groupKey => $group) {
-            $roles = [];
-            foreach ($this->roleDefinitions() as $role => $definition) {
-                if ($definition['group'] === $groupKey && ($resolved[$role] ?? 0) > 0) {
-                    $roles[$role] = $definition;
+            if ($groupKey === 'charts') {
+                continue;
+            }
+
+            $roles = $groupKey === 'vehicle'
+                ? $this->vehicleOverviewRoles()
+                : $this->rolesForGroup($groupKey);
+
+            $availableRoles = [];
+            foreach ($roles as $role) {
+                $definition = $this->roleDefinitions()[$role] ?? null;
+                $targetId = (int) ($resolved[$role] ?? 0);
+                if (is_array($definition) && $targetId > 0 && IPS_VariableExists($targetId)) {
+                    $availableRoles[$role] = $definition;
                 }
             }
 
-            if ($roles === []) {
+            if ($availableRoles === []) {
                 continue;
             }
 
@@ -31,11 +41,18 @@ trait EVTileObjectTreeTrait
                 continue;
             }
 
-            foreach ($roles as $role => $definition) {
-                $targetId = (int) ($resolved[$role] ?? 0);
-                if ($targetId > 0 && IPS_VariableExists($targetId)) {
-                    $this->ensureLink($groupId, $definition, $targetId, $managedTargets);
-                }
+            $position = 10;
+            foreach ($availableRoles as $role => $definition) {
+                $targetId = (int) $resolved[$role];
+                $this->ensureLink(
+                    $groupId,
+                    $groupKey,
+                    $role,
+                    $targetId,
+                    $position,
+                    $managedTargets
+                );
+                $position += 10;
             }
         }
 
@@ -45,13 +62,43 @@ trait EVTileObjectTreeTrait
         );
     }
 
+    private function vehicleOverviewRoles(): array
+    {
+        return [
+            'vehicleName',
+            'licensePlate',
+            'soc',
+            'range',
+            'mileage',
+            'locked',
+            'parkingState',
+            'charging',
+            'chargePower',
+            'targetSoc',
+            'climate',
+            'targetTemperature',
+            'lastUpdate'
+        ];
+    }
+
+    private function rolesForGroup(string $groupKey): array
+    {
+        $roles = [];
+        foreach ($this->roleDefinitions() as $role => $definition) {
+            if (($definition['group'] ?? '') === $groupKey) {
+                $roles[] = $role;
+            }
+        }
+        return $roles;
+    }
+
     private function ensureGroup(string $groupKey, array $group): int
     {
         $ident = 'EVTILE_Group_' . ucfirst($groupKey);
         $existingId = $this->findChildByIdent($this->InstanceID, $ident);
         if ($existingId > 0) {
             $object = IPS_GetObject($existingId);
-            if ((int) ($object['ObjectType'] ?? -1) !== 1) {
+            if ((int) ($object['ObjectType'] ?? -1) !== OBJECTTYPE_INSTANCE) {
                 $this->LogMessage('EV Tile: Ident ' . $ident . ' is already used by another object.', KL_WARNING);
                 return 0;
             }
@@ -67,14 +114,25 @@ trait EVTileObjectTreeTrait
         return $id;
     }
 
-    private function ensureLink(int $groupId, array $definition, int $targetId, array &$managedTargets): void
-    {
-        $ident = 'EVTILE_Link_' . (string) $definition['ident'];
+    private function ensureLink(
+        int $groupId,
+        string $groupKey,
+        string $role,
+        int $targetId,
+        int $position,
+        array &$managedTargets
+    ): void {
+        $definition = $this->roleDefinitions()[$role] ?? null;
+        if (!is_array($definition)) {
+            return;
+        }
+
+        $ident = 'EVTILE_Link_' . ucfirst($groupKey) . '_' . (string) $definition['ident'];
         $existingId = $this->findChildByIdent($groupId, $ident);
 
         if ($existingId > 0) {
             $object = IPS_GetObject($existingId);
-            if ((int) ($object['ObjectType'] ?? -1) !== 6) {
+            if ((int) ($object['ObjectType'] ?? -1) !== OBJECTTYPE_LINK) {
                 $this->LogMessage('EV Tile: Ident ' . $ident . ' is already used by another object.', KL_WARNING);
                 return;
             }
@@ -83,13 +141,10 @@ trait EVTileObjectTreeTrait
             $currentTarget = (int) ($link['TargetID'] ?? 0);
             $previousManagedTarget = (int) ($managedTargets[$ident] ?? 0);
 
-            // Only retarget a link if it still points to the last target managed by EV Tile.
-            // A user-modified link target therefore remains user-owned.
             if ($previousManagedTarget > 0 && $currentTarget === $previousManagedTarget && $currentTarget !== $targetId) {
                 IPS_SetLinkTargetID($existingId, $targetId);
                 $managedTargets[$ident] = $targetId;
             } elseif ($previousManagedTarget === 0) {
-                // Existing objects without management metadata are treated as user-owned.
                 $managedTargets[$ident] = $currentTarget;
             }
             return;
@@ -98,9 +153,8 @@ trait EVTileObjectTreeTrait
         $linkId = IPS_CreateLink();
         IPS_SetParent($linkId, $groupId);
         IPS_SetIdent($linkId, $ident);
-        IPS_SetName($linkId, $this->Translate((string) $definition['label']));
-        IPS_SetIcon($linkId, (string) $definition['icon']);
-        IPS_SetPosition($linkId, (int) $definition['position']);
+        IPS_SetName($linkId, '');
+        IPS_SetPosition($linkId, $position);
         IPS_SetLinkTargetID($linkId, $targetId);
         $managedTargets[$ident] = $targetId;
     }

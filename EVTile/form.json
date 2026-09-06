@@ -12,91 +12,67 @@
         },
         {
           "type": "Label",
-          "caption": "Variables with common vehicle identifiers are assigned automatically. Manual assignments below override automatic detection."
+          "caption": "EV Tile maps vehicle data by exact technical Ident. MySkoda is the first fully supported source; other vehicle modules can be assigned manually."
         }
       ]
     },
     {
       "type": "ExpansionPanel",
-      "caption": "Operation",
+      "caption": "List view",
       "expanded": true,
       "items": [
         {
           "type": "CheckBox",
-          "name": "EnableControls",
-          "caption": "Allow charging and climate control from the tile"
+          "name": "CreateListView",
+          "caption": "Create grouped list view with links"
+        },
+        {
+          "type": "Label",
+          "caption": "After explicit activation, EV Tile creates its own grouped child instances and links to the original vehicle variables. Existing user names, icons and positions are not overwritten later."
         }
       ]
     },
     {
       "type": "ExpansionPanel",
-      "caption": "Manual variable assignment",
+      "caption": "Help and documentation",
       "expanded": false,
       "items": [
         {
           "type": "Label",
-          "caption": "Only assign variables that cannot be detected automatically. Unused values may remain empty."
+          "caption": "Documentation and source code: github.com/taloriko/IPSymconEVTile"
         },
         {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "StateOfChargeID", "caption": "State of charge", "validVariableTypes": [1, 2]},
-            {"type": "SelectVariable", "name": "RangeID", "caption": "Range", "validVariableTypes": [1, 2]},
-            {"type": "SelectVariable", "name": "MileageID", "caption": "Mileage", "validVariableTypes": [1, 2]}
-          ]
+          "type": "Label",
+          "caption": "Module documentation: github.com/taloriko/IPSymconEVTile/blob/main/EVTile/README.md"
         },
         {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "LockedID", "caption": "Locked", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "DoorsOpenID", "caption": "Doors open", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "WindowsOpenID", "caption": "Windows open", "validVariableTypes": [0]}
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "TrunkOpenID", "caption": "Trunk open", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "BonnetOpenID", "caption": "Bonnet open", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "SunroofOpenID", "caption": "Sunroof open", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "LightsOnID", "caption": "Lights on", "validVariableTypes": [0]}
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "ChargingID", "caption": "Charging", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "ChargePowerID", "caption": "Charging power", "validVariableTypes": [1, 2]},
-            {"type": "SelectVariable", "name": "TargetSOCID", "caption": "Charging limit", "validVariableTypes": [1, 2]}
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "ChargingStateID", "caption": "Charging state", "validVariableTypes": [3]},
-            {"type": "SelectVariable", "name": "ChargeTypeID", "caption": "Charge type", "validVariableTypes": [3]},
-            {"type": "SelectVariable", "name": "ChargeModeID", "caption": "Charging mode", "validVariableTypes": [1, 3]},
-            {"type": "SelectVariable", "name": "FullyChargedAtID", "caption": "Fully charged at", "validVariableTypes": [1]}
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "ClimateID", "caption": "Air conditioning", "validVariableTypes": [0]},
-            {"type": "SelectVariable", "name": "TargetTemperatureID", "caption": "Target temperature", "validVariableTypes": [1, 2]}
-          ]
-        },
-        {
-          "type": "RowLayout",
-          "items": [
-            {"type": "SelectVariable", "name": "VehicleNameID", "caption": "Vehicle name", "validVariableTypes": [3]},
-            {"type": "SelectVariable", "name": "LicensePlateID", "caption": "License plate", "validVariableTypes": [3]},
-            {"type": "SelectVariable", "name": "ParkingStateID", "caption": "Parking state", "validVariableTypes": [3]},
-            {"type": "SelectVariable", "name": "LastUpdateID", "caption": "Last update", "validVariableTypes": [1]}
-          ]
+          "type": "Label",
+          "caption": "Report issues: github.com/taloriko/IPSymconEVTile/issues"
         }
       ]
     }
   ],
-  "actions": []
+  "actions": [],
+  "status": [
+    {
+      "code": 102,
+      "icon": "active",
+      "caption": "Vehicle data mapped"
+    },
+    {
+      "code": 104,
+      "icon": "inactive",
+      "caption": "No vehicle instance selected"
+    },
+    {
+      "code": 201,
+      "icon": "error",
+      "caption": "Selected vehicle instance does not exist"
+    },
+    {
+      "code": 202,
+      "icon": "error",
+      "caption": "No supported vehicle variables found"
+    }
+  ]
 }

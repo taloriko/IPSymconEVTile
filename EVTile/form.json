@@ -18,17 +18,37 @@
     },
     {
       "type": "ExpansionPanel",
-      "caption": "List view",
+      "caption": "Object structure",
       "expanded": true,
       "items": [
         {
           "type": "CheckBox",
           "name": "CreateListView",
-          "caption": "Create grouped list view with links"
+          "caption": "Create grouped vehicle view with links"
         },
         {
           "type": "Label",
-          "caption": "After explicit activation, EV Tile creates its own grouped child instances and links to the original vehicle variables. Existing user names, icons and positions are not overwritten later."
+          "caption": "EV Tile creates group instances and links to the original vehicle variables. Links do not receive their own display name or icon; the original variable presentation is used."
+        },
+        {
+          "type": "Label",
+          "caption": "For the Tile Visualization, configure the EV Tile object as Single element and select Vehicle. This visualization setting is stored by Symcon in the visualization configuration and cannot be preset by the module."
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Charts",
+      "expanded": true,
+      "items": [
+        {
+          "type": "CheckBox",
+          "name": "CreateChargingChart",
+          "caption": "Create charging chart"
+        },
+        {
+          "type": "Label",
+          "caption": "Creates a native Symcon line chart once: state of charge and charging limit on the left axis, charging power on the right axis. The source variables must be logged in Archive Control for history to be visible."
         }
       ]
     },

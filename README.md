@@ -1,32 +1,33 @@
 # EV Tile für IP-Symcon
 
-Herstellerunabhängige Fahrzeug-Kachel für die IP-Symcon Kachelvisualisierung.
+EV Tile ist ein herstellerunabhängiges Visualisierungsmodul für Fahrzeugdaten in IP-Symcon. Das Modul liest vorhandene Fahrzeugvariablen aus einer frei wählbaren IP-Symcon-Instanz und stellt die wichtigsten Werte in **einer einzigen responsiven Kachel** dar.
 
-EV Tile stellt typische Daten eines Elektrofahrzeugs in einer kompakten, responsiven Kachel dar. Die Datenquelle ist frei wählbar; das Modul ist nicht an einen bestimmten Fahrzeughersteller oder ein bestimmtes API-Modul gebunden.
+**MySkoda** ist in Version 1.0 die erste vollständig unterstützte Datenquelle. Die Architektur ist bewusst offen aufgebaut, damit später weitere Fahrzeugmodule ergänzt werden können, ohne die Kachel selbst neu zu entwickeln.
 
-## Funktionsumfang
+## Funktionen
 
-- Ladezustand als integrierter 20-Segment-Balken im Ladebereich
-- Reichweite und Kilometerstand
-- Verriegelungsstatus
-- Türen, Fenster, Kofferraum, Motorhaube, Schiebedach und Licht
-- Ladezustand, Ladeleistung, Ladelimit und Lademodus
-- Ladeart und erwarteter Ladeabschluss
-- Klimatisierung und Solltemperatur
-- letzte Aktualisierung
-- optionale Bedienung von Laden und Klimatisierung über vorhandene Variablenaktionen
-- automatische Zuordnung bekannter Variablen-Idents und Variablennamen
-- kompakter Zuordnungsstatus in der Instanzkonfiguration
-- manuelle Variablenzuordnung für nicht automatisch erkannte Datenpunkte
-- responsive Darstellung für Smartphone und Desktop
-
-Diagnose-, API- und Hersteller-spezifische Verwaltungsdaten sind nicht Bestandteil der Kachel.
+- frei wählbare Fahrzeug-Instanz als Datenquelle
+- automatische Zuordnung ausschließlich über den **exakten technischen Ident**
+- zusätzliche Prüfung des erwarteten Variablentyps
+- keine automatische Erkennung über frei änderbare Variablennamen
+- manuelle Zuordnung als Fallback für jeden einzelnen Datenpunkt
+- Zuordnungsstatus mit **automatisch erkannt / manuell zugeordnet / fehlt**
+- detaillierte Auflistung aller unterstützten Datenpunkte in der Instanzkonfiguration
+- optionale gruppierte Listenansicht mit Dummy-Instanzen und Links auf die **Originalvariablen**
+- responsive HTML-SDK-Kachel für Smartphone, Tablet und Desktop
+- Light- und Dark-Mode
+- Anzeige von Ladezustand, Reichweite, Kilometerstand, Fahrzeugstatus, Laden und Klima
+- Diagnosehinweise für API-Key-Warnung, Teilfehler und neue API-Funktionen, sofern die Datenquelle diese liefert
+- keine zyklische Abfrage durch EV Tile; Änderungen werden über IP-Symcon-Nachrichten übernommen
+- Version 1.0 ist bewusst **Anzeige-only** und sendet keine Fahrzeugbefehle
 
 ## Voraussetzungen
 
-- IP-Symcon 8.1 oder neuer
+- IP-Symcon **8.1 oder neuer**
 - Kachelvisualisierung
-- Fahrzeugdaten als Symcon-Variablen
+- Fahrzeugdaten als IP-Symcon-Variablen unter einer auswählbaren Quellinstanz
+
+Für die erste vollständig unterstützte Quelle siehe [MySkoda](https://github.com/taloriko/IPSymconMySkoda).
 
 ## Installation
 
@@ -38,80 +39,81 @@ https://github.com/taloriko/IPSymconEVTile
 
 Anschließend eine Instanz **EV Tile** anlegen.
 
-## Konfiguration
+## Erste Einrichtung
 
-Zuerst wird die Fahrzeug- bzw. Quellinstanz ausgewählt. Nach **Übernehmen** wertet das Modul die untergeordneten Variablen aus und ordnet bekannte Datenpunkte automatisch zu.
+1. In der EV-Tile-Instanz unter **Datenquelle** die Fahrzeug-Instanz auswählen.
+2. Konfiguration übernehmen.
+3. Im Bereich **Zuordnungsstatus** prüfen, welche Datenpunkte automatisch erkannt wurden.
+4. Fehlende Datenpunkte bei Bedarf unter **Manuelle Variablenzuordnung** ergänzen.
+5. Optional **Gruppierte Listenansicht mit Links anlegen** aktivieren und erneut übernehmen.
+6. Die EV-Tile-Instanz als einzelnes Element in die Kachelvisualisierung aufnehmen.
 
-Der Bereich **Zuordnungsstatus** zeigt nur die Anzahl der Zuordnungen:
+## Zuordnung
 
-- 🟢 **Automatisch erkannt** – Anzahl automatisch gefundener Datenpunkte
-- 🔵 **Manuell zugeordnet** – Anzahl manuell überschriebener Datenpunkte
-- 🟠 **Fehlt** – Anzahl noch nicht zugeordneter Datenpunkte
+Die automatische Zuordnung erfolgt ausschließlich über den technischen `Ident` einer Variable. Ein Treffer wird nur verwendet, wenn der Variablentyp zur erwarteten Rolle passt und der Treffer eindeutig ist.
 
-In der **Manuellen Variablenzuordnung** wird direkt am jeweiligen Feld angezeigt, welche Variable die automatische Erkennung gefunden hat. Beispiel:
-
-```text
-🟢 Ladezustand (Auto #12345)
-🔵 Kennzeichen (Auto #12346)
-🟠 Ladeart (Auto —)
-```
-
-Eine manuelle Auswahl überschreibt ausschließlich den jeweiligen Datenpunkt. Die übrigen Zuordnungen bleiben automatisch.
-
-Unterstützte Standard-Idents sind unter anderem:
+Beispiel:
 
 ```text
-StateOfCharge
-Range
-Mileage
-Locked
-DoorsOpen
-WindowsOpen
-Charging
-ChargePower
-TargetSOC
-ChargeMode
-Climate
-TargetTemperature
-VehicleName
-LicensePlate
-ChargingState
-ChargeType
-FullyChargedAt
-TrunkOpen
-BonnetOpen
-SunroofOpen
-LightsOn
-ParkingState
-LastUpdate
+StateOfCharge -> Ladezustand
+Range         -> Reichweite
+Mileage       -> Kilometerstand
+Locked        -> Verriegelt
 ```
 
-Für die automatische Erkennung werden zusätzlich typische deutsche und englische Variablennamen berücksichtigt. Damit können auch Fahrzeugmodule ohne identische Idents automatisch erkannt werden.
+Eine manuelle Zuordnung überschreibt nur den jeweiligen Datenpunkt. Ist eine manuell ausgewählte Variable später nicht mehr vorhanden oder besitzt den falschen Typ, fällt EV Tile auf die automatische Ident-Zuordnung zurück.
 
-## Bedienung
+## Listenansicht
 
-Besitzt die zugeordnete Variable eine Symcon-Aktion, kann die Kachel unterstützte Funktionen wie Laden oder Klimatisierung direkt auslösen. Bedienbare Funktionen werden über eigene kleine Aktionsschaltflächen angezeigt. Die übrigen Kachelflächen sind reine Anzeigeelemente und lösen bei Berührung keine Fahrzeugaktion aus.
+Die Listenansicht ist **standardmäßig deaktiviert**, da hierfür zusätzliche Objekte angelegt werden. Erst nach ausdrücklicher Aktivierung erzeugt EV Tile unterhalb seiner Instanz eigene Gruppen und Links:
 
-Die Bedienung kann in der Konfiguration vollständig deaktiviert werden.
+```text
+EV Tile
+├── Fahrzeug
+├── Status
+├── Laden
+├── Klima
+├── Standort
+└── Diagnose
+```
 
-## Darstellung
+Die Links zeigen direkt auf die Originalvariablen. Es werden keine Fahrzeugwerte kopiert und keine Spiegelvariablen angelegt. Namen, Icons und Positionen der erzeugten Objekte werden nur bei ihrer Erstanlage gesetzt und später nicht überschrieben.
 
-Die Kachel verwendet eine native HTML-Kachel über das Symcon Tile SDK. Änderungen der Quellvariablen werden über Symcon-Nachrichten überwacht und ohne zyklisches Polling an die Kachel übertragen.
+## Kachel
 
-Beim Erzeugen der Kachel werden die Variablenzuordnungen erneut direkt aus der aktuellen Konfiguration und der Quellinstanz aufgelöst. Dadurch ist die Initialdarstellung nicht von einem zuvor gespeicherten Zuordnungszustand abhängig.
+Die Kachel ist ein einziges HTML-SDK-Element. Sie zeigt abhängig von den tatsächlich verfügbaren Daten unter anderem:
 
-Die Fahrzeugdarstellung ist herstellerneutral und quer ausgerichtet, damit auf Smartphones weniger vertikaler Platz benötigt wird. Der Ladezustand wird als eigene, in den Ladeblock integrierte Zeile dargestellt. Der Balken besteht aus 20 Segmenten und bildet damit Schritte von jeweils 5 Prozent ab. Die Segmentfarbe folgt dem Ladezustand von Rot über Orange und Hellgrün bis Dunkelgrün.
+- Fahrzeugname und Kennzeichen
+- Ladezustand mit 20-Segment-Batterieanzeige
+- Reichweite und Kilometerstand
+- Verriegelung sowie offene Türen, Fenster, Kofferraum, Motorhaube und Schiebedach
+- Lichtstatus
+- Ladestatus, Ladeleistung, Ladelimit, Ladeart, Lademodus und erwarteten Ladeabschluss
+- Klimatisierung und Solltemperatur
+- relevante Diagnosehinweise
 
-Zustände wie offene Türen, Fenster, Kofferraum, Motorhaube, Schiebedach oder eingeschaltetes Licht werden direkt am Fahrzeug hervorgehoben.
+Fehlende Werte werden ausgeblendet. Die Kachel bleibt dadurch auch bei einer Datenquelle mit nur wenigen Fahrzeugwerten sinnvoll nutzbar.
 
-Eingehende Visualisierungsnachrichten werden mit dem zuletzt bekannten vollständigen Fahrzeugzustand zusammengeführt. Teilnachrichten bei Bedienaktionen können dadurch nicht die übrigen Anzeigen leeren.
+## Herstellerunabhängigkeit
 
-## Architekturhinweis
+Die Visualisierung arbeitet intern mit einem normalisierten Fahrzeugzustand. Nur die Mapping-Schicht kennt konkrete Quell-Idents. Dadurch kann die Unterstützung weiterer Fahrzeugmodule später ergänzt werden, ohne das HTML-Layout an einen Hersteller zu koppeln.
 
-Die technische Umsetzung orientiert sich an den öffentlich dokumentierten Architekturmustern der TileVisu-Module von da8ter, insbesondere an der Nutzung von `SetVisualizationType(1)`, `GetVisualizationTile()`, `MessageSink()` und `UpdateVisualizationValue()`. Quellcode und grafische Assets wurden eigenständig erstellt.
+In Version 1.0 ist MySkoda das Referenzprofil und die erste vollständig getestete Quelle.
+
+## Datenschutz
+
+EV Tile führt selbst **keine externen Netzwerkaufrufe** durch. Es verarbeitet ausschließlich Daten aus der lokalen IP-Symcon-Installation und referenziert die ausgewählten Fahrzeugvariablen.
+
+## Dokumentation
+
+Die vollständige Modul-Dokumentation befindet sich unter [EVTile/README.md](EVTile/README.md).
+
+## Fehler melden
+
+Fehler und nachvollziehbare Verbesserungsvorschläge können über die [GitHub Issues](https://github.com/taloriko/IPSymconEVTile/issues) gemeldet werden.
 
 ## Lizenz
 
-Copyright © 2026 taloriko
+Copyright © 2026 **taloriko**.
 
-Veröffentlicht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE).
+Veröffentlicht unter der [MIT-Lizenz](LICENSE).

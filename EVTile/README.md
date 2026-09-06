@@ -1,18 +1,20 @@
 # EV Tile
 
-Herstellerunabhängiges IP-Symcon-Gerätemodul zur Visualisierung bereits vorhandener Fahrzeugdaten. Eine EV-Tile-Instanz verwendet genau eine frei wählbare Fahrzeug-Instanz als Datenquelle.
+Herstellerunabhängiges IP-Symcon-Gerätemodul zur strukturierten Darstellung bereits vorhandener Fahrzeugdaten mit nativen Symcon-Objekten. Eine EV-Tile-Instanz verwendet genau eine frei wählbare Fahrzeug-Instanz als Datenquelle.
 
 ## Konzept
 
-EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen Hersteller- oder Cloud-Abfragen durch. Stattdessen werden vorhandene IP-Symcon-Variablen einer Quellinstanz anhand stabiler technischer Idents zugeordnet und in einen herstellerneutralen internen Fahrzeugzustand überführt.
+EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen Hersteller- oder Cloud-Abfragen durch. Stattdessen werden vorhandene IP-Symcon-Variablen einer Quellinstanz anhand stabiler technischer Idents zugeordnet.
 
-**Version 1.0 unterstützt MySkoda vollständig als Referenz-Datenquelle.** Andere Fahrzeugmodule können bereits über die manuelle Variablenzuordnung verwendet werden. Weitere feste Mapping-Profile können später ergänzt werden, ohne die Visualisierung neu aufzubauen.
+**Version 1.0 unterstützt MySkoda vollständig als Referenz-Datenquelle.** Andere Fahrzeugmodule können bereits über die manuelle Variablenzuordnung verwendet werden. Weitere feste Mapping-Profile können später ergänzt werden.
+
+EV Tile verwendet **keine eigene HTML-Visualisierung**. Die Ausgabe besteht aus nativen Gruppeninstanzen, Links auf Originalvariablen und optional einem nativen Symcon-Diagramm.
 
 ## Voraussetzungen
 
 - IP-Symcon **8.1 oder neuer**
-- Kachelvisualisierung
 - eine Fahrzeug- oder Quellinstanz mit Fahrzeugdaten als IP-Symcon-Variablen
+- für das optionale Ladediagramm: die verwendeten Quellvariablen müssen im Archive Control geloggt werden
 
 ## Installation und erste Einrichtung
 
@@ -20,10 +22,10 @@ EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen H
 2. Instanz **EV Tile** anlegen.
 3. Unter **Datenquelle** die Fahrzeug-Instanz auswählen.
 4. Konfiguration übernehmen.
-5. Den Bereich **Zuordnungsstatus** prüfen.
+5. Den kompakten **Zuordnungsstatus** prüfen.
 6. Fehlende Werte bei Bedarf unter **Manuelle Variablenzuordnung** ergänzen.
-7. Optional die gruppierte Listenansicht aktivieren.
-8. EV Tile als einzelnes Element in die Kachelvisualisierung aufnehmen.
+7. Optional **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren.
+8. Optional **Ladediagramm anlegen** aktivieren.
 
 Die Instanz kann auch ohne gewählte Datenquelle fehlerfrei angelegt werden und bleibt dann inaktiv.
 
@@ -31,7 +33,7 @@ Die Instanz kann auch ohne gewählte Datenquelle fehlerfrei angelegt werden und 
 
 Die automatische Zuordnung verwendet ausschließlich den **exakten technischen Objekt-Ident**.
 
-Es werden ausdrücklich keine Variablennamen wie `Ladezustand`, `SOC`, `Battery` oder ähnliche freie Bezeichnungen ausgewertet. Namen sind benutzeränderbar und deshalb keine stabile Schnittstelle.
+Es werden keine Variablennamen wie `Ladezustand`, `SOC`, `Battery` oder andere frei änderbare Bezeichnungen ausgewertet.
 
 Für jeden Datenpunkt wird geprüft:
 
@@ -41,7 +43,18 @@ Für jeden Datenpunkt wird geprüft:
 
 Nur dann wird die Variable automatisch verwendet. Bei keinem Treffer, falschem Typ oder Mehrdeutigkeit bleibt der Datenpunkt unzugeordnet und kann manuell ausgewählt werden.
 
-Die Suche umfasst die Quellinstanz und bis zu zwei darunterliegende Ebenen aus Kategorien oder Instanzen. Mehrere gültige Variablen mit demselben Ident werden nicht automatisch geraten.
+Die Suche umfasst die Quellinstanz und bis zu zwei darunterliegende Ebenen aus Kategorien oder Instanzen.
+
+## Zuordnungsstatus
+
+Direkt unter der Datenquelle zeigt die Instanzkonfiguration nur die kompakte Übersicht:
+
+- 🟢 **Automatisch erkannt: X**
+- 🔵 **Manuell zugeordnet: X**
+- 🟠 **Fehlt: X**
+- **X von 30 Datenpunkten verfügbar**
+
+Eine zweite detaillierte Auflistung ist dort bewusst nicht vorhanden. Welcher Datenpunkt automatisch erkannt wurde oder noch fehlt, ist direkt im Bereich **Manuelle Variablenzuordnung** an den farbigen Markierungen und der automatisch gefundenen Objekt-ID erkennbar.
 
 ## Manuelle Variablenzuordnung
 
@@ -57,30 +70,9 @@ Ist eine manuelle Auswahl ungültig, nicht mehr vorhanden oder vom falschen Vari
 
 Eine manuelle Auswahl beeinflusst nur diesen einen Datenpunkt.
 
-## Zuordnungsstatus
-
-Direkt unter der Datenquelle zeigt die Instanzkonfiguration:
-
-- 🟢 **Automatisch erkannt**
-- 🔵 **Manuell zugeordnet**
-- 🟠 **Fehlt**
-- zusätzlich die Anzahl verfügbarer Datenpunkte insgesamt
-
-Darunter wird jeder Datenpunkt mit Gruppe, Bezeichnung, erwartetem Ident und effektiv verwendeter Variable aufgeführt.
-
-Beispiel:
-
-```text
-🟢 Ladezustand · StateOfCharge · #12345 Ladezustand
-🔵 Kennzeichen · LicensePlate · #54321 Kennzeichen
-🟠 Längengrad · Longitude · fehlt
-```
-
-Bei Mehrdeutigkeit oder einem falschen Variablentyp wird dies in der Übersicht kenntlich gemacht.
-
 ## Unterstützte MySkoda-Datenpunkte in Version 1.0
 
-Version 1.0 definiert **30 feste Datenpunkte** als kanonisches EV-Tile-Datenmodell für MySkoda.
+Version 1.0 definiert **30 feste Datenpunkte** als Referenzmodell für MySkoda.
 
 | Gruppe | Ident | Anzeige | Erwarteter Typ |
 |---|---|---|---|
@@ -115,79 +107,96 @@ Version 1.0 definiert **30 feste Datenpunkte** als kanonisches EV-Tile-Datenmode
 | Diagnose | `PartialErrors` | API-Teilfehler | String |
 | Diagnose | `NewApiFeatures` | Neue API-Funktionen | Integer |
 
-## Gruppierte Listenansicht
+## Native Objektstruktur
 
-Die Option **Gruppierte Listenansicht mit Links anlegen** ist standardmäßig **aus**.
+Die Option **Gruppierte Fahrzeugansicht mit Links anlegen** ist standardmäßig **aus**, da EV Tile hierfür zusätzliche Symcon-Objekte anlegt.
 
-Erst nach ausdrücklicher Aktivierung legt EV Tile eigene Dummy-Instanzen und Links unterhalb der EV-Tile-Instanz an:
+Nach ausdrücklicher Aktivierung entsteht unterhalb der EV-Tile-Instanz abhängig von den verfügbaren Daten ungefähr:
 
 ```text
 EV Tile
 ├── Fahrzeug
-│   ├── Fahrzeugname      -> Originalvariable
-│   ├── Kennzeichen       -> Originalvariable
-│   ├── Reichweite        -> Originalvariable
-│   └── ...
+│   ├── Fahrzeugname
+│   ├── Kennzeichen
+│   ├── Ladezustand
+│   ├── Reichweite
+│   ├── Kilometerstand
+│   ├── Verriegelt
+│   ├── Parkstatus
+│   ├── Laden
+│   ├── Ladeleistung
+│   ├── Ladelimit
+│   ├── Klimatisierung
+│   ├── Solltemperatur
+│   └── Letzte Aktualisierung
 ├── Status
 ├── Laden
 ├── Klima
 ├── Standort
-└── Diagnose
+├── Diagnose
+└── Diagramme
 ```
 
-Nur aktuell zugeordnete Datenpunkte werden beim Aufbau berücksichtigt. Die Links zeigen direkt auf die Originalvariablen, sodass deren Wertdarstellungen und vorhandene Aktionen erhalten bleiben.
+### Fahrzeug als Übersicht
 
-EV Tile legt keine Spiegelvariablen an und kopiert keine Werte. Namen, Icons und Positionen der von EV Tile erzeugten Gruppen und Links werden nur bei ihrer Erstanlage gesetzt. Spätere Benutzeranpassungen an diesen Eigenschaften werden nicht überschrieben. Wenn sich die Datenzuordnung ändert und ein bereits vorhandener EV-Tile-Link weiterverwendet wird, darf nur dessen Zielvariable angepasst werden.
+Die Gruppe **Fahrzeug** ist bewusst keine reine Kopie der fachlichen Gruppe „Fahrzeug“, sondern die kompakte Gesamtübersicht. Sie enthält zusätzlich die wichtigsten Werte aus Laden, Status und Klima.
 
-Vorhandene EV-Tile-Gruppen oder Links werden beim Deaktivieren der Option nicht automatisch gelöscht.
+Damit eignet sie sich als einzelnes Element in der Kachelvisualisierung.
+
+### Links bleiben original
+
+Alle angezeigten Werte sind Links auf die Originalvariablen. EV Tile:
+
+- legt keine Spiegelvariablen an,
+- kopiert keine Werte,
+- vergibt den Links **keinen eigenen Anzeigenamen**,
+- vergibt den Links **kein eigenes Icon**.
+
+Dadurch übernimmt die Darstellung den Namen, das Profil, das Icon und vorhandene Aktionen der Zielvariable.
+
+Nur die Gruppeninstanzen selbst erhalten bei ihrer Erstanlage einen sinnvollen Namen, ein Icon und eine Position. Bestehende Gruppen werden später nicht umbenannt oder neu gestaltet.
+
+Wenn sich eine Zuordnung ändert, darf EV Tile einen selbst angelegten Link auf die neue Zielvariable umstellen, solange der Benutzer das Linkziel nicht zwischenzeitlich selbst verändert hat.
 
 ## Kachelvisualisierung
 
-EV Tile verwendet das native IP-Symcon HTML-SDK:
+EV Tile hat keinen eigenen HTML-Kacheltyp (`SetVisualizationType(0)`). Die native Objektstruktur wird von Symcon selbst visualisiert.
 
-- `SetVisualizationType(1)`
-- `GetVisualizationTile()`
-- `MessageSink()`
-- `UpdateVisualizationValue()`
-- `VM_UPDATE` für Änderungen der referenzierten Quellvariablen
+Für die gewünschte kompakte Ansicht:
 
-Es gibt kein zyklisches Polling durch EV Tile. Änderungen an den zugeordneten Fahrzeugvariablen werden über IP-Symcon-Nachrichten an die Kachel weitergegeben.
+1. EV Tile in der Kachelvisualisierung hinzufügen.
+2. Darstellung **Einzelnes Element** wählen.
+3. Als Element **Fahrzeug** auswählen.
 
-Die gesamte Darstellung ist **ein einzelnes Kachel-Element**.
+Die Einstellung **Einzelnes Element → Fahrzeug** ist Bestandteil der Visualisierungskonfiguration von IP-Symcon. Sie kann vom PHP-Modul nicht zuverlässig vorbelegt werden und wird deshalb einmalig vom Benutzer in der Visualisierung gewählt.
 
-### Darstellung
+## Diagramme
 
-Die Kachel ist herstellerneutral, responsiv und für Light- und Dark-Mode ausgelegt. Sie enthält abhängig von den verfügbaren Daten:
+Die Option **Ladediagramm anlegen** ist standardmäßig **aus**.
 
-- Fahrzeugname, Kennzeichen und Aktualisierungszeit
-- Ladezustand als große Prozentanzeige mit 20 Segmenten
-- Reichweite und Kilometerstand
-- grafische Fahrzeugdarstellung
-- Verriegelung und relevante offene Fahrzeugteile
-- Ladestatus, Ladeleistung, Ladelimit, Ladeart, Lademodus und Ladeende
-- Klimatisierung und Solltemperatur
-- relevante Diagnosehinweise
+Nach ausdrücklicher Aktivierung legt EV Tile einmalig die Gruppe **Diagramme** und darin das native Symcon-Diagramm **Ladeübersicht** an.
 
-Fehlende Datenblöcke oder Einzelwerte werden automatisch ausgeblendet.
+Das Diagramm enthält:
 
-Die Batterieanzeige verwendet folgende Stufen:
+- `StateOfCharge` – Ladezustand auf der linken Achse
+- `TargetSOC` – Ladelimit auf der linken Achse
+- `ChargePower` – Ladeleistung auf der rechten Achse
 
-- bis 10 %: kritisch
-- bis 25 %: niedrig
-- unter 80 %: normal
-- ab 80 %: hoher Ladezustand
+Alle drei Datenpunkte müssen zugeordnet sein. Fehlt einer davon, wird kein unvollständiges Diagramm erzeugt und EV Tile schreibt einen Hinweis ins Instanz-Log.
 
-## Bedienung
+### Archivierung
 
-Version 1.0 ist bewusst **Anzeige-only**. Die Kachel sendet keine Lade-, Klima- oder sonstigen Fahrzeugbefehle.
+Ein Symcon-Diagramm benötigt archivierte Quelldaten für einen zeitlichen Verlauf. EV Tile verändert die Archive-Control-Einstellungen **nicht selbstständig**.
 
-Die optionale Listenansicht verweist jedoch auf die Originalvariablen. Falls diese in der Datenquelle bereits Aktionen besitzen, bleiben diese Eigenschaften der Originalvariablen unverändert.
+Beim MySkoda-Modul kann die Archivierung von Ladezustand, Ladelimit und Ladeleistung ausdrücklich aktiviert werden. Alternativ kann der Benutzer das Logging direkt im Archive Control konfigurieren.
+
+Die Diagrammkonfiguration wird nur bei der Erstanlage gesetzt. Spätere Anpassungen des Benutzers werden nicht bei jedem `ApplyChanges()` überschrieben.
 
 ## Objekt- und Referenzverhalten
 
-Die gewählte Quellinstanz und alle effektiv verwendeten Variablen werden mit `RegisterReference()` referenziert. Auf die verwendeten Variablen wird zusätzlich `VM_UPDATE` registriert.
+Die gewählte Quellinstanz und alle effektiv verwendeten Variablen werden mit `RegisterReference()` referenziert.
 
-EV Tile verändert keine Properties der Fahrzeug-Instanz und ruft kein `IPS_ApplyChanges()` auf fremden Instanzen auf.
+EV Tile verändert keine Properties der Fahrzeug-Instanz, ruft kein `IPS_ApplyChanges()` auf fremden Instanzen auf und verändert keine Archivierung ohne Benutzeraktion.
 
 ## Instanzstatus
 
@@ -200,11 +209,13 @@ EV Tile verändert keine Properties der Fahrzeug-Instanz und ruft kein `IPS_Appl
 
 ## Fehlersuche
 
-- **Automatisch erkannt: 0** – prüfen, ob die richtige Fahrzeug-Instanz ausgewählt wurde und die Quellvariablen die erwarteten Idents besitzen.
-- **Fehlt trotz passendem Ident** – Variablentyp prüfen. EV Tile übernimmt keine Variable mit unpassendem Datentyp.
-- **Mehrdeutig** – derselbe Ident wurde mehrfach gefunden. Den gewünschten Wert manuell zuordnen.
-- **Kachel leer** – Datenquelle übernehmen und prüfen, ob mindestens ein unterstützter Datenpunkt verfügbar ist.
-- **Listenansicht fehlt** – Option ausdrücklich aktivieren und die Konfiguration übernehmen.
+- **Automatisch erkannt: 0** – richtige Fahrzeug-Instanz und technische Idents prüfen.
+- **Fehlt trotz passendem Ident** – Variablentyp prüfen.
+- **Mehrdeutige Zuordnung** – gewünschten Wert manuell zuordnen.
+- **Objektstruktur fehlt** – Option **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren und übernehmen.
+- **Diagramm fehlt** – `StateOfCharge`, `TargetSOC` und `ChargePower` müssen vorhanden sein.
+- **Diagramm ohne Verlauf** – Logging der drei Quellvariablen im Archive Control prüfen.
+- **Fahrzeug wird nicht automatisch als Kachelelement gewählt** – in der Kachelvisualisierung einmalig **Einzelnes Element → Fahrzeug** einstellen.
 
 ## Datenschutz und externe Dienste
 

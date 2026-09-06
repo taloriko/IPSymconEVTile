@@ -10,12 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: PHP syntax
-        run: php -l EVTile/module.php
-      - name: JSON syntax
         run: |
-          python3 -m json.tool library.json >/dev/null
-          python3 -m json.tool EVTile/module.json >/dev/null
-          python3 -m json.tool EVTile/form.json >/dev/null
-          python3 -m json.tool EVTile/locale.json >/dev/null
-      - name: Structure
+          find EVTile -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Validate JSON
+        run: |
+          python3 -m json.tool library.json > /dev/null
+          python3 -m json.tool EVTile/module.json > /dev/null
+          python3 -m json.tool EVTile/form.json > /dev/null
+          python3 -m json.tool EVTile/locale.json > /dev/null
+      - name: Validate Symcon repository structure
         run: python3 tests/validate_structure.py

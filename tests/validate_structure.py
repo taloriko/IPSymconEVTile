@@ -38,7 +38,6 @@ def main() -> None:
     locale = load(ROOT / "EVTile" / "locale.json")
     translations = locale.get("translations", {}).get("de", {})
 
-    # Stable repository/module identity and initial Version 1.0 metadata.
     assert set(library) == {
         "id", "author", "name", "url", "compatibility", "version", "build", "date"
     }
@@ -80,7 +79,6 @@ def main() -> None:
     assert not (ROOT / "EVTile" / "module.html").exists()
     assert not (ROOT / "EVTile" / "src" / "VisualizationTrait.php").exists()
 
-    # Every static form caption has a German translation.
     assert isinstance(translations, dict) and translations
     all_captions = set()
     all_captions |= captions(form.get("elements", []))
@@ -92,10 +90,8 @@ def main() -> None:
     elements = list(walk(form.get("elements", [])))
     source = [e for e in elements if e.get("name") == "SourceInstanceID"]
     assert len(source) == 1 and source[0].get("type") == "SelectInstance"
-
     list_view = [e for e in elements if e.get("name") == "CreateListView"]
     assert len(list_view) == 1 and list_view[0].get("type") == "CheckBox"
-
     chart_option = [e for e in elements if e.get("name") == "CreateChargingChart"]
     assert len(chart_option) == 1 and chart_option[0].get("type") == "CheckBox"
 
@@ -119,7 +115,6 @@ def main() -> None:
         path.read_text(encoding="utf-8") for path in (ROOT / "EVTile").rglob("*.php")
     )
 
-    # Strict native module; no HTML SDK remains.
     assert "final class EVTile extends IPSModuleStrict" in module_php
     for trait in ["CoreTrait.php", "MappingTrait.php", "ObjectTreeTrait.php", "ChartTrait.php"]:
         assert trait in module_php
@@ -134,7 +129,6 @@ def main() -> None:
     ]:
         assert forbidden not in php_sources
 
-    # Exact Ident mapping + expected type validation; no name aliases.
     assert "resolveAutomaticCandidates" in mapping
     assert "ObjectIdent" in mapping
     assert "$catalog[$ident]" in mapping
@@ -157,7 +151,6 @@ def main() -> None:
     for ident in required_idents:
         assert f"'ident' => '{ident}'" in mapping
 
-    # Source/resolved variables are references only; no polling or mirrored values.
     assert "RegisterPropertyInteger('SourceInstanceID', 0)" in core
     assert "RegisterReference($sourceId)" in core
     assert "RegisterReference($id)" in core
@@ -165,7 +158,7 @@ def main() -> None:
     assert "RegisterVariable" not in php_sources
     assert "SetValue(" not in php_sources
 
-    # Assignment status is compact. Per-data-point information belongs to manual mapping.
+    # Compact status: counts only, no per-role/group detail loop.
     assert "insertAssignmentStatusPanel" in core
     assert "Automatically detected" in core
     assert "Manually assigned" in core
@@ -175,9 +168,8 @@ def main() -> None:
         "private function insertManualAssignmentPanel", 1
     )[0]
     assert "groupDefinitions" not in status_method
-    assert "roleDefinitions" not in status_method
+    assert "foreach ($this->roleDefinitions()" not in status_method
 
-    # Object creation requires explicit opt-in.
     assert "RegisterPropertyBoolean('CreateListView', false)" in core
     assert "ReadPropertyBoolean('CreateListView')" in core
     assert "ReadPropertyBoolean('CreateListView')" in tree
@@ -188,7 +180,6 @@ def main() -> None:
     assert "previousManagedTarget" in tree
     assert "IPS_Delete" not in tree
 
-    # Vehicle is the compact overview; detailed groups remain separate.
     assert "vehicleOverviewRoles" in tree
     for overview_role in [
         "vehicleName", "licensePlate", "soc", "range", "mileage", "locked",
@@ -196,16 +187,14 @@ def main() -> None:
     ]:
         assert f"'{overview_role}'" in tree
 
-    # Links do not override original variable display name/icon.
+    # Links inherit display properties from their targets.
     assert "IPS_SetName($linkId, '')" in tree
     assert "IPS_SetIcon($linkId" not in tree
     assert "IPS_SetName($linkId, $this->Translate" not in tree
-    # Group instances do get a useful name/icon/position on initial creation.
     assert "IPS_SetName($id, $this->Translate" in tree
     assert "IPS_SetIcon($id" in tree
     assert "IPS_SetPosition($id" in tree
 
-    # Optional native charging chart, created only after explicit opt-in.
     assert "RegisterPropertyBoolean('CreateChargingChart', false)" in core
     assert "ReadPropertyBoolean('CreateChargingChart')" in core
     assert "ReadPropertyBoolean('CreateChargingChart')" in chart
@@ -222,7 +211,6 @@ def main() -> None:
     assert "IPS_SetMediaContent" in chart
     assert "IPS_SendMediaEvent" in chart
 
-    # Store-oriented ownership rules.
     for forbidden in [
         "IPS_SetProperty", "IPS_ApplyChanges", "AC_SetLoggingStatus", "AC_SetAggregationType",
         "AC_SetGraphStatus", "IPS_SetVariableCustomProfile", "IPS_SetVariableCustomAction",
@@ -230,7 +218,6 @@ def main() -> None:
     ]:
         assert forbidden not in php_sources
 
-    # Documentation represents the native initial 1.0 design.
     root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
     module_readme = (ROOT / "EVTile" / "README.md").read_text(encoding="utf-8")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")

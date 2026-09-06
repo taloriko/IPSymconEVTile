@@ -12,48 +12,49 @@ trait EVTileMappingTrait
             'charging' => ['label' => 'Charging', 'icon' => 'Electricity', 'position' => 30],
             'climate' => ['label' => 'Climate', 'icon' => 'Temperature', 'position' => 40],
             'location' => ['label' => 'Location', 'icon' => 'Location', 'position' => 50],
-            'diagnostics' => ['label' => 'Diagnostics', 'icon' => 'Information', 'position' => 60]
+            'diagnostics' => ['label' => 'Diagnostics', 'icon' => 'Information', 'position' => 60],
+            'charts' => ['label' => 'Charts', 'icon' => 'Graph', 'position' => 70]
         ];
     }
 
     private function roleDefinitions(): array
     {
         return [
-            'vehicleName' => ['ident' => 'VehicleName', 'label' => 'Vehicle name', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 10, 'icon' => 'Car'],
-            'licensePlate' => ['ident' => 'LicensePlate', 'label' => 'License plate', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 20, 'icon' => 'Information'],
-            'range' => ['ident' => 'Range', 'label' => 'Range', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 30, 'icon' => 'Gauge'],
-            'mileage' => ['ident' => 'Mileage', 'label' => 'Mileage', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 40, 'icon' => 'Gauge'],
-            'parkingState' => ['ident' => 'ParkingState', 'label' => 'Parking state', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 50, 'icon' => 'Car'],
-            'lastUpdate' => ['ident' => 'LastUpdate', 'label' => 'Last update', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60, 'icon' => 'Clock'],
+            'vehicleName' => ['ident' => 'VehicleName', 'label' => 'Vehicle name', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'licensePlate' => ['ident' => 'LicensePlate', 'label' => 'License plate', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'range' => ['ident' => 'Range', 'label' => 'Range', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 30],
+            'mileage' => ['ident' => 'Mileage', 'label' => 'Mileage', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 40],
+            'parkingState' => ['ident' => 'ParkingState', 'label' => 'Parking state', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
+            'lastUpdate' => ['ident' => 'LastUpdate', 'label' => 'Last update', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
 
-            'locked' => ['ident' => 'Locked', 'label' => 'Locked', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10, 'icon' => 'Lock'],
-            'doorsOpen' => ['ident' => 'DoorsOpen', 'label' => 'Doors open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20, 'icon' => 'Car'],
-            'windowsOpen' => ['ident' => 'WindowsOpen', 'label' => 'Windows open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 30, 'icon' => 'Car'],
-            'trunkOpen' => ['ident' => 'TrunkOpen', 'label' => 'Trunk open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 40, 'icon' => 'Car'],
-            'bonnetOpen' => ['ident' => 'BonnetOpen', 'label' => 'Bonnet open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 50, 'icon' => 'Car'],
-            'sunroofOpen' => ['ident' => 'SunroofOpen', 'label' => 'Sunroof open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 60, 'icon' => 'Car'],
-            'lightsOn' => ['ident' => 'LightsOn', 'label' => 'Lights on', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 70, 'icon' => 'Bulb'],
+            'locked' => ['ident' => 'Locked', 'label' => 'Locked', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
+            'doorsOpen' => ['ident' => 'DoorsOpen', 'label' => 'Doors open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
+            'windowsOpen' => ['ident' => 'WindowsOpen', 'label' => 'Windows open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 30],
+            'trunkOpen' => ['ident' => 'TrunkOpen', 'label' => 'Trunk open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 40],
+            'bonnetOpen' => ['ident' => 'BonnetOpen', 'label' => 'Bonnet open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 50],
+            'sunroofOpen' => ['ident' => 'SunroofOpen', 'label' => 'Sunroof open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 60],
+            'lightsOn' => ['ident' => 'LightsOn', 'label' => 'Lights on', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 70],
 
-            'soc' => ['ident' => 'StateOfCharge', 'label' => 'State of charge', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10, 'icon' => 'Battery'],
-            'charging' => ['ident' => 'Charging', 'label' => 'Charging', 'group' => 'charging', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20, 'icon' => 'Electricity'],
-            'chargingState' => ['ident' => 'ChargingState', 'label' => 'Charging state', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 30, 'icon' => 'Electricity'],
-            'chargeType' => ['ident' => 'ChargeType', 'label' => 'Charge type', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 40, 'icon' => 'Electricity'],
-            'chargePower' => ['ident' => 'ChargePower', 'label' => 'Charging power', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 50, 'icon' => 'Electricity'],
-            'targetSoc' => ['ident' => 'TargetSOC', 'label' => 'Charging limit', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 60, 'icon' => 'Battery'],
-            'chargeMode' => ['ident' => 'ChargeMode', 'label' => 'Charging mode', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_STRING], 'position' => 70, 'icon' => 'Gear'],
-            'fullyChargedAt' => ['ident' => 'FullyChargedAt', 'label' => 'Fully charged at', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 80, 'icon' => 'Clock'],
+            'soc' => ['ident' => 'StateOfCharge', 'label' => 'State of charge', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10],
+            'charging' => ['ident' => 'Charging', 'label' => 'Charging', 'group' => 'charging', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
+            'chargingState' => ['ident' => 'ChargingState', 'label' => 'Charging state', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
+            'chargeType' => ['ident' => 'ChargeType', 'label' => 'Charge type', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'chargePower' => ['ident' => 'ChargePower', 'label' => 'Charging power', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 50],
+            'targetSoc' => ['ident' => 'TargetSOC', 'label' => 'Charging limit', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 60],
+            'chargeMode' => ['ident' => 'ChargeMode', 'label' => 'Charging mode', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_STRING], 'position' => 70],
+            'fullyChargedAt' => ['ident' => 'FullyChargedAt', 'label' => 'Fully charged at', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 80],
 
-            'climate' => ['ident' => 'Climate', 'label' => 'Air conditioning', 'group' => 'climate', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10, 'icon' => 'Temperature'],
-            'targetTemperature' => ['ident' => 'TargetTemperature', 'label' => 'Target temperature', 'group' => 'climate', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20, 'icon' => 'Temperature'],
+            'climate' => ['ident' => 'Climate', 'label' => 'Air conditioning', 'group' => 'climate', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
+            'targetTemperature' => ['ident' => 'TargetTemperature', 'label' => 'Target temperature', 'group' => 'climate', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20],
 
-            'latitude' => ['ident' => 'Latitude', 'label' => 'Latitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10, 'icon' => 'Location'],
-            'longitude' => ['ident' => 'Longitude', 'label' => 'Longitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20, 'icon' => 'Location'],
+            'latitude' => ['ident' => 'Latitude', 'label' => 'Latitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10],
+            'longitude' => ['ident' => 'Longitude', 'label' => 'Longitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20],
 
-            'apiKeyWarning' => ['ident' => 'ApiKeyWarning', 'label' => 'API key warning', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10, 'icon' => 'Warning'],
-            'apiKeyExpiresAt' => ['ident' => 'ApiKeyExpiresAtVar', 'label' => 'API key valid until', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 20, 'icon' => 'Key'],
-            'requestsRemaining' => ['ident' => 'RequestsRemaining', 'label' => 'API requests remaining', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30, 'icon' => 'Gauge'],
-            'partialErrors' => ['ident' => 'PartialErrors', 'label' => 'API partial errors', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 40, 'icon' => 'Warning'],
-            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50, 'icon' => 'Information']
+            'apiKeyWarning' => ['ident' => 'ApiKeyWarning', 'label' => 'API key warning', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
+            'apiKeyExpiresAt' => ['ident' => 'ApiKeyExpiresAtVar', 'label' => 'API key valid until', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 20],
+            'requestsRemaining' => ['ident' => 'RequestsRemaining', 'label' => 'API requests remaining', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30],
+            'partialErrors' => ['ident' => 'PartialErrors', 'label' => 'API partial errors', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50]
         ];
     }
 
@@ -108,7 +109,7 @@ trait EVTileMappingTrait
                 $object = IPS_GetObject($childId);
                 $objectType = (int) ($object['ObjectType'] ?? -1);
 
-                if ($objectType === 2) {
+                if ($objectType === OBJECTTYPE_VARIABLE) {
                     $ident = (string) ($object['ObjectIdent'] ?? '');
                     if ($ident !== '') {
                         $result[$ident][] = (int) $childId;
@@ -116,7 +117,7 @@ trait EVTileMappingTrait
                     continue;
                 }
 
-                if ($depth < 2 && in_array($objectType, [0, 1], true)) {
+                if ($depth < 2 && in_array($objectType, [OBJECTTYPE_CATEGORY, OBJECTTYPE_INSTANCE], true)) {
                     $queue[] = [(int) $childId, $depth + 1];
                 }
             }
@@ -194,50 +195,5 @@ trait EVTileMappingTrait
             }
         }
         return false;
-    }
-
-    private function idForRole(array $resolved, string $role): int
-    {
-        $id = (int) ($resolved[$role] ?? 0);
-        return $id > 0 && IPS_VariableExists($id) ? $id : 0;
-    }
-
-    private function rawRoleValue(array $resolved, string $role): mixed
-    {
-        $id = $this->idForRole($resolved, $role);
-        return $id > 0 ? GetValue($id) : null;
-    }
-
-    private function formattedRoleValue(array $resolved, string $role): string
-    {
-        $id = $this->idForRole($resolved, $role);
-        if ($id <= 0) {
-            return '';
-        }
-
-        try {
-            return (string) GetValueFormatted($id);
-        } catch (Throwable) {
-            $value = GetValue($id);
-            return is_scalar($value) ? (string) $value : '';
-        }
-    }
-
-    private function stringRoleValue(array $resolved, string $role, string $default = ''): string
-    {
-        $value = $this->rawRoleValue($resolved, $role);
-        return $value === null ? $default : (string) $value;
-    }
-
-    private function numericRoleValue(array $resolved, string $role): int|float|null
-    {
-        $value = $this->rawRoleValue($resolved, $role);
-        return is_int($value) || is_float($value) ? $value : null;
-    }
-
-    private function boolRoleValue(array $resolved, string $role): ?bool
-    {
-        $value = $this->rawRoleValue($resolved, $role);
-        return is_bool($value) ? $value : null;
     }
 }

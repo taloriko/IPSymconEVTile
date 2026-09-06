@@ -98,7 +98,7 @@ Fehlende Werte werden ausgeblendet. Die Kachel bleibt dadurch auch bei einer Dat
 
 Die Visualisierung arbeitet intern mit einem normalisierten Fahrzeugzustand. Nur die Mapping-Schicht kennt konkrete Quell-Idents. Dadurch kann die Unterstützung weiterer Fahrzeugmodule später ergänzt werden, ohne das HTML-Layout an einen Hersteller zu koppeln.
 
-In Version 1.0 ist MySkoda das Referenzprofil und die erste vollständig getestete Quelle.
+In Version 1.0 ist MySkoda das Referenzprofil und die erste vollständig unterstützte Referenzquelle.
 
 ## Datenschutz
 

@@ -187,10 +187,9 @@ def main() -> None:
     ]:
         assert f"'{overview_role}'" in tree
 
-    # Links inherit display properties from their targets.
-    assert "IPS_SetName($linkId, '')" in tree
+    # Links receive no custom name/icon. Symcon mirrors the target presentation.
+    assert "IPS_SetName($linkId" not in tree
     assert "IPS_SetIcon($linkId" not in tree
-    assert "IPS_SetName($linkId, $this->Translate" not in tree
     assert "IPS_SetName($id, $this->Translate" in tree
     assert "IPS_SetIcon($id" in tree
     assert "IPS_SetPosition($id" in tree

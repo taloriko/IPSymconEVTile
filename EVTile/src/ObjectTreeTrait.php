@@ -153,7 +153,6 @@ trait EVTileObjectTreeTrait
         $linkId = IPS_CreateLink();
         IPS_SetParent($linkId, $groupId);
         IPS_SetIdent($linkId, $ident);
-        IPS_SetName($linkId, '');
         IPS_SetPosition($linkId, $position);
         IPS_SetLinkTargetID($linkId, $targetId);
         $managedTargets[$ident] = $targetId;

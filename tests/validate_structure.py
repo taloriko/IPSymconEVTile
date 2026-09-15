@@ -47,7 +47,7 @@ def main() -> None:
     assert library["name"] == "EV Tile"
     assert library["url"] == "https://github.com/taloriko/IPSymconEVTile"
     assert library["compatibility"]["version"] >= "8.1"
-    assert library["version"] == "1.0"
+    assert library["version"] == "1.1"
     assert library["build"] == 0
     assert isinstance(library["date"], int) and library["date"] > 0
 
@@ -103,6 +103,9 @@ def main() -> None:
         "Manual variable assignment": "Manuelle Variablenzuordnung",
         "Help and documentation": "Hilfe und Dokumentation",
         "Charging overview": "Ladeübersicht",
+        "API": "API",
+        "Pending commands": "Ausstehende Befehle",
+        "Command status": "Befehlsstatus",
     }.items():
         assert translations.get(source_text) == german
 
@@ -145,11 +148,15 @@ def main() -> None:
         "ChargeType", "ChargePower", "TargetSOC", "ChargeMode", "FullyChargedAt",
         "Climate", "TargetTemperature", "Latitude", "Longitude", "ApiKeyWarning",
         "ApiKeyExpiresAtVar", "RequestsRemaining", "PartialErrors", "NewApiFeatures",
-        "LastUpdate"
+        "PendingCommands", "CommandStatus", "LastUpdate"
     ]
-    assert len(required_idents) == 30
+    assert len(required_idents) == 32
     for ident in required_idents:
         assert f"'ident' => '{ident}'" in mapping
+
+    assert "'diagnostics' => ['label' => 'API'" in mapping
+    assert "'pendingCommands'" in mapping
+    assert "'commandStatus'" in mapping
 
     assert "RegisterPropertyInteger('SourceInstanceID', 0)" in core
     assert "RegisterReference($sourceId)" in core
@@ -179,6 +186,12 @@ def main() -> None:
     assert "ManagedLinkTargets" in core
     assert "previousManagedTarget" in tree
     assert "IPS_Delete" not in tree
+
+    # Preserve the existing diagnostics group Ident while migrating only its untouched default name.
+    assert "EVTILE_Group_" in tree
+    assert "$groupKey === 'diagnostics'" in tree
+    assert "['Diagnose', 'Diagnostics']" in tree
+    assert "IPS_SetName($existingId" in tree
 
     assert "vehicleOverviewRoles" in tree
     for overview_role in [
@@ -222,18 +235,19 @@ def main() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
     for text in [
-        "herstellerunabhängiges IP-Symcon-Modul",
-        "MySkoda",
+        "herstellerunabhängiges Symcon-Modul",
+        "MySkoda 1.1",
         "exakten technischen Ident",
         "automatisch erkannt / manuell zugeordnet / fehlt",
+        "32 definierte MySkoda-Datenpunkte",
         "Originalvariablen",
         "keine eigene HTML-Visualisierung",
         "Einzelnes Element",
-        "Fahrzeug",
         "Ladediagramm",
         "Archive Control",
-        "keine externen Netzwerkaufrufe",
-        "IP-Symcon **8.1 oder neuer**",
+        "PendingCommands",
+        "CommandStatus",
+        "Symcon **8.1 oder neuer**",
         "MIT-Lizenz"
     ]:
         assert text in root_readme
@@ -242,8 +256,11 @@ def main() -> None:
         "Automatische Zuordnung",
         "Manuelle Variablenzuordnung",
         "Zuordnungsstatus",
-        "30",
+        "32 feste Datenpunkte",
         "Native Objektstruktur",
+        "API-Gruppe",
+        "PendingCommands",
+        "CommandStatus",
         "keine eigene HTML-Visualisierung",
         "Einzelnes Element",
         "Diagramme",
@@ -253,10 +270,17 @@ def main() -> None:
     ]:
         assert text in module_readme
 
+    # User-facing repository text uses the current product name.
+    for path in [ROOT / "README.md", ROOT / "EVTile" / "README.md", ROOT / "CHANGELOG.md"]:
+        assert "IP-Symcon" not in path.read_text(encoding="utf-8")
+
+    assert "## 1.1 - 2026-09-15" in changelog
     assert "## 1.0 - 2026-09-06" in changelog
     assert "no HTML visualization" in changelog
-    for old_version in ["## 1.1", "## 1.2", "## 1.3", "## 2."]:
-        assert old_version not in changelog
+    assert "PendingCommands" in changelog
+    assert "CommandStatus" in changelog
+    assert "## 1.2" not in changelog
+    assert "## 2." not in changelog
 
 
 if __name__ == "__main__":

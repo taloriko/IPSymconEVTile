@@ -1,8 +1,17 @@
 # Changelog
 
+## 1.1 - 2026-09-15
+
+- product naming updated from IP-Symcon to Symcon in user-facing documentation
+- reference mapping updated for MySkoda 1.1
+- `PendingCommands` and `CommandStatus` added to the supported MySkoda data points
+- diagnostic object group renamed to **API** for new installations
+- existing managed default group **Diagnose/Diagnostics** is migrated to **API** while preserving user-renamed groups
+- supported MySkoda reference model increased from 30 to 32 data points
+
 ## 1.0 - 2026-09-06
 
-- Initial release of EV Tile for IP-Symcon
+- Initial release of EV Tile for Symcon
 - manufacturer-independent native Symcon object architecture with MySkoda as the first fully supported data source
 - automatic mapping by exact technical variable Ident with variable type validation
 - compact assignment status with automatically detected, manually assigned and missing data points

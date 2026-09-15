@@ -12,7 +12,7 @@ trait EVTileMappingTrait
             'charging' => ['label' => 'Charging', 'icon' => 'Electricity', 'position' => 30],
             'climate' => ['label' => 'Climate', 'icon' => 'Temperature', 'position' => 40],
             'location' => ['label' => 'Location', 'icon' => 'Location', 'position' => 50],
-            'diagnostics' => ['label' => 'Diagnostics', 'icon' => 'Information', 'position' => 60],
+            'diagnostics' => ['label' => 'API', 'icon' => 'Information', 'position' => 60],
             'charts' => ['label' => 'Charts', 'icon' => 'Graph', 'position' => 70]
         ];
     }
@@ -54,7 +54,9 @@ trait EVTileMappingTrait
             'apiKeyExpiresAt' => ['ident' => 'ApiKeyExpiresAtVar', 'label' => 'API key valid until', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 20],
             'requestsRemaining' => ['ident' => 'RequestsRemaining', 'label' => 'API requests remaining', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30],
             'partialErrors' => ['ident' => 'PartialErrors', 'label' => 'API partial errors', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
-            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50]
+            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50],
+            'pendingCommands' => ['ident' => 'PendingCommands', 'label' => 'Pending commands', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
+            'commandStatus' => ['ident' => 'CommandStatus', 'label' => 'Command status', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 70]
         ];
     }
 

@@ -1,10 +1,10 @@
-# EV Tile für IP-Symcon
+# EV Tile für Symcon
 
-EV Tile ist ein herstellerunabhängiges IP-Symcon-Modul zur übersichtlichen Darstellung bereits vorhandener Fahrzeugdaten mit **nativen Symcon-Objekten**.
+EV Tile ist ein herstellerunabhängiges Symcon-Modul zur übersichtlichen Darstellung bereits vorhandener Fahrzeugdaten mit **nativen Symcon-Objekten**.
 
 Das Modul führt selbst keine Fahrzeug- oder Cloud-Abfragen durch. Es verwendet eine frei wählbare Fahrzeug-Instanz als Datenquelle, ordnet deren Variablen über stabile technische Idents zu und kann daraus eine strukturierte Fahrzeugansicht mit Links auf die Originalvariablen erzeugen.
 
-**MySkoda** ist in Version 1.0 die erste vollständig unterstützte Referenzquelle. Die Architektur bleibt offen für weitere Fahrzeugmodule und Hersteller.
+**MySkoda 1.1** ist die vollständig unterstützte Referenzquelle. Die Architektur bleibt offen für weitere Fahrzeugmodule und Hersteller.
 
 ## Funktionen
 
@@ -14,10 +14,11 @@ Das Modul führt selbst keine Fahrzeug- oder Cloud-Abfragen durch. Es verwendet 
 - keine Erkennung über benutzeränderbare Variablennamen
 - manuelle Zuordnung als Fallback für jeden Datenpunkt
 - kompakter Zuordnungsstatus: **automatisch erkannt / manuell zugeordnet / fehlt**
-- 30 definierte MySkoda-Datenpunkte als Referenzmodell
+- **32 definierte MySkoda-Datenpunkte** als Referenzmodell
 - optionale native Objektstruktur mit Gruppeninstanzen und Links auf die **Originalvariablen**
 - Gruppe **Fahrzeug** als kompakte Übersicht der wichtigsten Werte
-- Detailgruppen **Status**, **Laden**, **Klima**, **Standort** und **Diagnose**
+- Detailgruppen **Status**, **Laden**, **Klima**, **Standort** und **API**
+- MySkoda-1.1-Diagnosewerte `PendingCommands` und `CommandStatus` in der Gruppe **API**
 - optionale Gruppe **Diagramme** mit einem nativen Ladediagramm
 - Ladediagramm: Ladezustand und Ladelimit links, Ladeleistung rechts
 - keine Spiegelvariablen und keine kopierten Fahrzeugwerte
@@ -26,11 +27,11 @@ Das Modul führt selbst keine Fahrzeug- oder Cloud-Abfragen durch. Es verwendet 
 
 ## Voraussetzungen
 
-- IP-Symcon **8.1 oder neuer**
-- Fahrzeugdaten als IP-Symcon-Variablen unter einer auswählbaren Quellinstanz
+- Symcon **8.1 oder neuer**
+- Fahrzeugdaten als Symcon-Variablen unter einer auswählbaren Quellinstanz
 - für das optionale Ladediagramm: Archivierung der verwendeten Quellvariablen im Archive Control
 
-Als erste vollständig unterstützte Quelle dient [MySkoda](https://github.com/taloriko/IPSymconMySkoda).
+Als vollständig unterstützte Quelle dient [MySkoda](https://github.com/taloriko/IPSymconMySkoda), abgestimmt auf Version 1.1.
 
 ## Installation
 
@@ -75,7 +76,14 @@ EV Tile
 ├── Laden
 ├── Klima
 ├── Standort
-├── Diagnose
+├── API
+│   ├── API-Key Warnung
+│   ├── API-Key gültig bis
+│   ├── Verbleibende API-Anfragen
+│   ├── API-Teilfehler
+│   ├── Neue API-Funktionen
+│   ├── Ausstehende Befehle
+│   └── Befehlsstatus
 └── Diagramme
     └── Ladeübersicht
 ```
@@ -84,9 +92,11 @@ Die Einträge unter den Gruppen sind **Links auf die Originalvariablen**. EV Til
 
 Nur die von EV Tile selbst angelegten Gruppeninstanzen erhalten bei der Erstanlage einen sinnvollen Namen, ein Icon und eine Position. Bereits bestehende Benutzeranpassungen werden bei späteren `ApplyChanges()` nicht überschrieben.
 
+Beim Update von Version 1.0 auf 1.1 wird die von EV Tile angelegte Standardgruppe **Diagnose** in **API** umbenannt. Ein vom Benutzer bereits geänderter Gruppenname bleibt unverändert.
+
 ## Kachelvisualisierung
 
-EV Tile besitzt bewusst **keine eigene HTML-Kachel**. Die native Objektstruktur wird direkt von der IP-Symcon Kachelvisualisierung dargestellt.
+EV Tile besitzt bewusst **keine eigene HTML-Kachel**. Die native Objektstruktur wird direkt von der Symcon-Kachelvisualisierung dargestellt.
 
 Für eine kompakte Fahrzeugansicht wird EV Tile in der Kachelvisualisierung als **Einzelnes Element** eingebunden und dort **Fahrzeug** ausgewählt.
 
@@ -111,21 +121,22 @@ Die automatische Zuordnung verwendet ausschließlich den technischen `Ident` ein
 Beispiele:
 
 ```text
-StateOfCharge -> Ladezustand
-Range         -> Reichweite
-Mileage       -> Kilometerstand
-Locked        -> Verriegelt
+StateOfCharge   -> Ladezustand
+Range           -> Reichweite
+Mileage         -> Kilometerstand
+PendingCommands -> Ausstehende Befehle
+CommandStatus   -> Befehlsstatus
 ```
 
 Eine manuelle Zuordnung überschreibt nur den jeweiligen Datenpunkt. Ist die manuell gewählte Variable später nicht mehr vorhanden oder vom falschen Typ, fällt EV Tile auf die automatische Ident-Zuordnung zurück.
 
 ## Herstellerunabhängigkeit
 
-Die Zuordnungsschicht trennt die fachlichen Fahrzeugrollen von der jeweiligen Datenquelle. Version 1.0 definiert das vollständige MySkoda-Mapping; weitere Hersteller oder Fahrzeugmodule können später ergänzt werden, ohne die grundlegende Objektstruktur neu aufzubauen.
+Die Zuordnungsschicht trennt die fachlichen Fahrzeugrollen von der jeweiligen Datenquelle. Version 1.1 definiert das vollständige Mapping für MySkoda 1.1; weitere Hersteller oder Fahrzeugmodule können später ergänzt werden, ohne die grundlegende Objektstruktur neu aufzubauen.
 
 ## Datenschutz
 
-EV Tile führt **keine externen Netzwerkaufrufe** durch. Es verarbeitet ausschließlich Objekte und Werte der lokalen IP-Symcon-Installation. Die Kommunikation mit einem Fahrzeughersteller bleibt Aufgabe des jeweiligen Fahrzeugmoduls.
+EV Tile führt **keine externen Netzwerkaufrufe** durch. Es verarbeitet ausschließlich Objekte und Werte der lokalen Symcon-Installation. Die Kommunikation mit einem Fahrzeughersteller bleibt Aufgabe des jeweiligen Fahrzeugmoduls.
 
 ## Dokumentation
 

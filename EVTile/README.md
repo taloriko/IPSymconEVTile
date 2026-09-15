@@ -1,19 +1,19 @@
 # EV Tile
 
-Herstellerunabhängiges IP-Symcon-Gerätemodul zur strukturierten Darstellung bereits vorhandener Fahrzeugdaten mit nativen Symcon-Objekten. Eine EV-Tile-Instanz verwendet genau eine frei wählbare Fahrzeug-Instanz als Datenquelle.
+Herstellerunabhängiges Symcon-Gerätemodul zur strukturierten Darstellung bereits vorhandener Fahrzeugdaten mit nativen Symcon-Objekten. Eine EV-Tile-Instanz verwendet genau eine frei wählbare Fahrzeug-Instanz als Datenquelle.
 
 ## Konzept
 
-EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen Hersteller- oder Cloud-Abfragen durch. Stattdessen werden vorhandene IP-Symcon-Variablen einer Quellinstanz anhand stabiler technischer Idents zugeordnet.
+EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen Hersteller- oder Cloud-Abfragen durch. Stattdessen werden vorhandene Symcon-Variablen einer Quellinstanz anhand stabiler technischer Idents zugeordnet.
 
-**Version 1.0 unterstützt MySkoda vollständig als Referenz-Datenquelle.** Andere Fahrzeugmodule können bereits über die manuelle Variablenzuordnung verwendet werden. Weitere feste Mapping-Profile können später ergänzt werden.
+**Version 1.1 unterstützt MySkoda 1.1 vollständig als Referenz-Datenquelle.** Andere Fahrzeugmodule können über die manuelle Variablenzuordnung verwendet werden.
 
 EV Tile verwendet **keine eigene HTML-Visualisierung**. Die Ausgabe besteht aus nativen Gruppeninstanzen, Links auf Originalvariablen und optional einem nativen Symcon-Diagramm.
 
 ## Voraussetzungen
 
-- IP-Symcon **8.1 oder neuer**
-- eine Fahrzeug- oder Quellinstanz mit Fahrzeugdaten als IP-Symcon-Variablen
+- Symcon **8.1 oder neuer**
+- eine Fahrzeug- oder Quellinstanz mit Fahrzeugdaten als Symcon-Variablen
 - für das optionale Ladediagramm: die verwendeten Quellvariablen müssen im Archive Control geloggt werden
 
 ## Installation und erste Einrichtung
@@ -27,7 +27,7 @@ EV Tile verwendet **keine eigene HTML-Visualisierung**. Die Ausgabe besteht aus 
 7. Optional **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren.
 8. Optional **Ladediagramm anlegen** aktivieren.
 
-Die Instanz kann auch ohne gewählte Datenquelle fehlerfrei angelegt werden und bleibt dann inaktiv.
+Die Instanz kann auch ohne gewählte Datenquelle angelegt werden und bleibt dann inaktiv.
 
 ## Automatische Zuordnung
 
@@ -47,14 +47,14 @@ Die Suche umfasst die Quellinstanz und bis zu zwei darunterliegende Ebenen aus K
 
 ## Zuordnungsstatus
 
-Direkt unter der Datenquelle zeigt die Instanzkonfiguration nur die kompakte Übersicht:
+Direkt unter der Datenquelle zeigt die Instanzkonfiguration die kompakte Übersicht:
 
 - 🟢 **Automatisch erkannt: X**
 - 🔵 **Manuell zugeordnet: X**
 - 🟠 **Fehlt: X**
-- **X von 30 Datenpunkten verfügbar**
+- **X von 32 Datenpunkten verfügbar**
 
-Eine zweite detaillierte Auflistung ist dort bewusst nicht vorhanden. Welcher Datenpunkt automatisch erkannt wurde oder noch fehlt, ist direkt im Bereich **Manuelle Variablenzuordnung** an den farbigen Markierungen und der automatisch gefundenen Objekt-ID erkennbar.
+Welcher Datenpunkt automatisch erkannt wurde oder noch fehlt, ist im Bereich **Manuelle Variablenzuordnung** an den farbigen Markierungen und der automatisch gefundenen Objekt-ID erkennbar.
 
 ## Manuelle Variablenzuordnung
 
@@ -70,9 +70,9 @@ Ist eine manuelle Auswahl ungültig, nicht mehr vorhanden oder vom falschen Vari
 
 Eine manuelle Auswahl beeinflusst nur diesen einen Datenpunkt.
 
-## Unterstützte MySkoda-Datenpunkte in Version 1.0
+## Unterstützte MySkoda-Datenpunkte in Version 1.1
 
-Version 1.0 definiert **30 feste Datenpunkte** als Referenzmodell für MySkoda.
+Version 1.1 definiert **32 feste Datenpunkte** als Referenzmodell für MySkoda 1.1.
 
 | Gruppe | Ident | Anzeige | Erwarteter Typ |
 |---|---|---|---|
@@ -101,11 +101,15 @@ Version 1.0 definiert **30 feste Datenpunkte** als Referenzmodell für MySkoda.
 | Klima | `TargetTemperature` | Solltemperatur | Integer / Float |
 | Standort | `Latitude` | Breitengrad | Integer / Float |
 | Standort | `Longitude` | Längengrad | Integer / Float |
-| Diagnose | `ApiKeyWarning` | API-Key Warnung | Boolean |
-| Diagnose | `ApiKeyExpiresAtVar` | API-Key gültig bis | Integer |
-| Diagnose | `RequestsRemaining` | Verbleibende API-Anfragen | Integer |
-| Diagnose | `PartialErrors` | API-Teilfehler | String |
-| Diagnose | `NewApiFeatures` | Neue API-Funktionen | Integer |
+| API | `ApiKeyWarning` | API-Key Warnung | Boolean |
+| API | `ApiKeyExpiresAtVar` | API-Key gültig bis | Integer |
+| API | `RequestsRemaining` | Verbleibende API-Anfragen | Integer |
+| API | `PartialErrors` | API-Teilfehler | String |
+| API | `NewApiFeatures` | Neue API-Funktionen | Integer |
+| API | `PendingCommands` | Ausstehende Befehle | Integer |
+| API | `CommandStatus` | Befehlsstatus | String |
+
+Die beiden Datenpunkte `PendingCommands` und `CommandStatus` werden vom MySkoda-Modul nur angelegt, wenn dort die Detail- und Diagnosevariablen aktiviert sind. Fehlen diese Variablen, bleiben die entsprechenden EV-Tile-Zuordnungen einfach leer.
 
 ## Native Objektstruktur
 
@@ -133,15 +137,28 @@ EV Tile
 ├── Laden
 ├── Klima
 ├── Standort
-├── Diagnose
+├── API
+│   ├── API-Key Warnung
+│   ├── API-Key gültig bis
+│   ├── Verbleibende API-Anfragen
+│   ├── API-Teilfehler
+│   ├── Neue API-Funktionen
+│   ├── Ausstehende Befehle
+│   └── Befehlsstatus
 └── Diagramme
 ```
 
 ### Fahrzeug als Übersicht
 
-Die Gruppe **Fahrzeug** ist bewusst keine reine Kopie der fachlichen Gruppe „Fahrzeug“, sondern die kompakte Gesamtübersicht. Sie enthält zusätzlich die wichtigsten Werte aus Laden, Status und Klima.
+Die Gruppe **Fahrzeug** ist die kompakte Gesamtübersicht. Sie enthält zusätzlich zu den Fahrzeugstammdaten die wichtigsten Werte aus Laden, Status und Klima.
 
 Damit eignet sie sich als einzelnes Element in der Kachelvisualisierung.
+
+### API-Gruppe
+
+Die Gruppe **API** fasst die technischen MySkoda-Diagnosewerte zusammen. In Version 1.1 gehören dazu zusätzlich die Befehlsdiagnosewerte `PendingCommands` und `CommandStatus`.
+
+Bei einem Update von EV Tile 1.0 auf 1.1 wird die von EV Tile angelegte Standardgruppe **Diagnose** in **API** umbenannt. Wurde die Gruppe vom Benutzer bereits selbst umbenannt, bleibt der Benutzername unverändert.
 
 ### Links bleiben original
 
@@ -154,7 +171,7 @@ Alle angezeigten Werte sind Links auf die Originalvariablen. EV Tile:
 
 Dadurch übernimmt die Darstellung den Namen, das Profil, das Icon und vorhandene Aktionen der Zielvariable.
 
-Nur die Gruppeninstanzen selbst erhalten bei ihrer Erstanlage einen sinnvollen Namen, ein Icon und eine Position. Bestehende Gruppen werden später nicht umbenannt oder neu gestaltet.
+Nur die Gruppeninstanzen selbst erhalten bei ihrer Erstanlage einen sinnvollen Namen, ein Icon und eine Position. Bestehende Benutzeranpassungen werden später nicht fortlaufend überschrieben.
 
 Wenn sich eine Zuordnung ändert, darf EV Tile einen selbst angelegten Link auf die neue Zielvariable umstellen, solange der Benutzer das Linkziel nicht zwischenzeitlich selbst verändert hat.
 
@@ -168,7 +185,7 @@ Für die gewünschte kompakte Ansicht:
 2. Darstellung **Einzelnes Element** wählen.
 3. Als Element **Fahrzeug** auswählen.
 
-Die Einstellung **Einzelnes Element → Fahrzeug** ist Bestandteil der Visualisierungskonfiguration von IP-Symcon. Sie kann vom PHP-Modul nicht zuverlässig vorbelegt werden und wird deshalb einmalig vom Benutzer in der Visualisierung gewählt.
+Die Einstellung **Einzelnes Element → Fahrzeug** ist Bestandteil der Symcon-Visualisierungskonfiguration. Sie kann vom PHP-Modul nicht zuverlässig vorbelegt werden und wird deshalb einmalig vom Benutzer in der Visualisierung gewählt.
 
 ## Diagramme
 
@@ -212,6 +229,7 @@ EV Tile verändert keine Properties der Fahrzeug-Instanz, ruft kein `IPS_ApplyCh
 - **Automatisch erkannt: 0** – richtige Fahrzeug-Instanz und technische Idents prüfen.
 - **Fehlt trotz passendem Ident** – Variablentyp prüfen.
 - **Mehrdeutige Zuordnung** – gewünschten Wert manuell zuordnen.
+- **Ausstehende Befehle/Befehlsstatus fehlen** – im MySkoda-Modul die Detail- und Diagnosevariablen aktivieren.
 - **Objektstruktur fehlt** – Option **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren und übernehmen.
 - **Diagramm fehlt** – `StateOfCharge`, `TargetSOC` und `ChargePower` müssen vorhanden sein.
 - **Diagramm ohne Verlauf** – Logging der drei Quellvariablen im Archive Control prüfen.
@@ -219,7 +237,7 @@ EV Tile verändert keine Properties der Fahrzeug-Instanz, ruft kein `IPS_ApplyCh
 
 ## Datenschutz und externe Dienste
 
-EV Tile kommuniziert mit **keinem externen Dienst**. Alle Daten stammen aus der lokalen IP-Symcon-Installation. Der Netzwerkzugriff auf einen Fahrzeughersteller ist Aufgabe des jeweils verwendeten Fahrzeugmoduls.
+EV Tile kommuniziert mit **keinem externen Dienst**. Alle Daten stammen aus der lokalen Symcon-Installation. Der Netzwerkzugriff auf einen Fahrzeughersteller ist Aufgabe des jeweils verwendeten Fahrzeugmoduls.
 
 ## Hilfe und Quellcode
 

@@ -34,6 +34,7 @@
       "Climate": "Klima",
       "Location": "Standort",
       "Diagnostics": "Diagnose",
+      "API": "API",
       "Vehicle name": "Fahrzeugname",
       "License plate": "Kennzeichen",
       "Range": "Reichweite",
@@ -62,7 +63,9 @@
       "API key valid until": "API-Key gültig bis",
       "API requests remaining": "Verbleibende API-Anfragen",
       "API partial errors": "API-Teilfehler",
-      "New API functions": "Neue API-Funktionen"
+      "New API functions": "Neue API-Funktionen",
+      "Pending commands": "Ausstehende Befehle",
+      "Command status": "Befehlsstatus"
     }
   }
 }

@@ -102,6 +102,16 @@ trait EVTileObjectTreeTrait
                 $this->LogMessage('EV Tile: Ident ' . $ident . ' is already used by another object.', KL_WARNING);
                 return 0;
             }
+
+            // Version 1.0 called this managed group "Diagnose". Rename only the
+            // untouched default name so user-defined names remain preserved.
+            if ($groupKey === 'diagnostics') {
+                $currentName = IPS_GetName($existingId);
+                if (in_array($currentName, ['Diagnose', 'Diagnostics'], true)) {
+                    IPS_SetName($existingId, $this->Translate((string) $group['label']));
+                }
+            }
+
             return $existingId;
         }
 

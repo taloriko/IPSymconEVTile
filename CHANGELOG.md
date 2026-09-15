@@ -2,7 +2,7 @@
 
 ## 1.1 - 2026-09-15
 
-- product naming updated from IP-Symcon to Symcon in user-facing documentation
+- user-facing documentation aligned with the current Symcon product naming
 - reference mapping updated for MySkoda 1.1
 - `PendingCommands` and `CommandStatus` added to the supported MySkoda data points
 - diagnostic object group renamed to **API** for new installations

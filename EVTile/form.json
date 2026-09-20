@@ -12,7 +12,7 @@
         },
         {
           "type": "Label",
-          "caption": "EV Tile maps vehicle data by exact technical Ident. MySkoda is the first fully supported source; other vehicle modules can be assigned manually."
+          "caption": "EV Tile is aligned with MySkoda 1.5 and maps its current variables by exact technical Ident. Older MySkoda variable types are not supported."
         }
       ]
     },
@@ -32,7 +32,7 @@
         },
         {
           "type": "Label",
-          "caption": "For the Tile Visualization, configure the EV Tile object as Single element and select Vehicle. This visualization setting is stored by Symcon in the visualization configuration and cannot be preset by the module."
+          "caption": "For the Tile Visualization, configure the EV Tile object as Single element and select Overview. The Overview group contains the most important vehicle values first."
         }
       ]
     },

@@ -19,8 +19,8 @@ trait EVTileObjectTreeTrait
                 continue;
             }
 
-            $roles = $groupKey === 'vehicle'
-                ? $this->vehicleOverviewRoles()
+            $roles = $groupKey === 'overview'
+                ? $this->overviewRoles()
                 : $this->rolesForGroup($groupKey);
 
             $availableRoles = [];
@@ -62,22 +62,27 @@ trait EVTileObjectTreeTrait
         );
     }
 
-    private function vehicleOverviewRoles(): array
+    private function overviewRoles(): array
     {
         return [
-            'vehicleName',
-            'licensePlate',
             'soc',
             'range',
-            'mileage',
-            'locked',
-            'parkingState',
             'charging',
+            'chargingState',
             'chargePower',
             'targetSoc',
+            'remainingChargingTime',
             'climate',
+            'climateState',
             'targetTemperature',
-            'lastUpdate'
+            'mileage',
+            'reliableLockStatus',
+            'doorsOpen',
+            'windowsOpen',
+            'parkingState',
+            'lastUpdate',
+            'vehicleName',
+            'licensePlate'
         ];
     }
 
@@ -103,15 +108,7 @@ trait EVTileObjectTreeTrait
                 return 0;
             }
 
-            // Version 1.0 called this managed group "Diagnose". Rename only the
-            // untouched default name so user-defined names remain preserved.
-            if ($groupKey === 'diagnostics') {
-                $currentName = IPS_GetName($existingId);
-                if (in_array($currentName, ['Diagnose', 'Diagnostics'], true)) {
-                    IPS_SetName($existingId, $this->Translate((string) $group['label']));
-                }
-            }
-
+            IPS_SetPosition($existingId, (int) $group['position']);
             return $existingId;
         }
 
@@ -157,6 +154,7 @@ trait EVTileObjectTreeTrait
             } elseif ($previousManagedTarget === 0) {
                 $managedTargets[$ident] = $currentTarget;
             }
+            IPS_SetPosition($existingId, $position);
             return;
         }
 

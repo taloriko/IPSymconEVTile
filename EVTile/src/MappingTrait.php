@@ -7,56 +7,116 @@ trait EVTileMappingTrait
     private function groupDefinitions(): array
     {
         return [
-            'vehicle' => ['label' => 'Vehicle', 'icon' => 'Car', 'position' => 10],
-            'status' => ['label' => 'Status', 'icon' => 'Shield', 'position' => 20],
-            'charging' => ['label' => 'Charging', 'icon' => 'Electricity', 'position' => 30],
-            'climate' => ['label' => 'Climate', 'icon' => 'Temperature', 'position' => 40],
-            'location' => ['label' => 'Location', 'icon' => 'Location', 'position' => 50],
-            'diagnostics' => ['label' => 'API', 'icon' => 'Information', 'position' => 60],
-            'charts' => ['label' => 'Charts', 'icon' => 'Graph', 'position' => 70]
+            'overview' => ['label' => 'Overview', 'icon' => 'Car', 'position' => 10],
+            'vehicle' => ['label' => 'Vehicle', 'icon' => 'Car', 'position' => 20],
+            'airConditioning' => ['label' => 'Air conditioning', 'icon' => 'Temperature', 'position' => 30],
+            'charging' => ['label' => 'Charging', 'icon' => 'Electricity', 'position' => 40],
+            'odometer' => ['label' => 'Odometer', 'icon' => 'Car', 'position' => 50],
+            'parkingPosition' => ['label' => 'Parking position', 'icon' => 'Location', 'position' => 60],
+            'statusOverall' => ['label' => 'Vehicle status', 'icon' => 'Shield', 'position' => 70],
+            'statusDetail' => ['label' => 'Vehicle details', 'icon' => 'Car', 'position' => 80],
+            'module' => ['label' => 'Module data', 'icon' => 'Information', 'position' => 90],
+            'vin' => ['label' => 'VIN data', 'icon' => 'Information', 'position' => 100],
+            'apiVehicle' => ['label' => 'API vehicle data', 'icon' => 'Information', 'position' => 110],
+            'charts' => ['label' => 'Charts', 'icon' => 'Graph', 'position' => 120]
         ];
     }
 
     private function roleDefinitions(): array
     {
         return [
+            // vehicle
             'vehicleName' => ['ident' => 'VehicleName', 'label' => 'Vehicle name', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
             'licensePlate' => ['ident' => 'LicensePlate', 'label' => 'License plate', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
-            'range' => ['ident' => 'Range', 'label' => 'Range', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 30],
-            'mileage' => ['ident' => 'Mileage', 'label' => 'Mileage', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 40],
-            'parkingState' => ['ident' => 'ParkingState', 'label' => 'Parking state', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
-            'lastUpdate' => ['ident' => 'LastUpdate', 'label' => 'Last update', 'group' => 'vehicle', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
+            'vin' => ['ident' => 'VIN', 'label' => 'VIN', 'group' => 'vehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
 
-            'locked' => ['ident' => 'Locked', 'label' => 'Locked', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
-            'doorsOpen' => ['ident' => 'DoorsOpen', 'label' => 'Doors open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
-            'windowsOpen' => ['ident' => 'WindowsOpen', 'label' => 'Windows open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 30],
-            'trunkOpen' => ['ident' => 'TrunkOpen', 'label' => 'Trunk open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 40],
-            'bonnetOpen' => ['ident' => 'BonnetOpen', 'label' => 'Bonnet open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 50],
-            'sunroofOpen' => ['ident' => 'SunroofOpen', 'label' => 'Sunroof open', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 60],
-            'lightsOn' => ['ident' => 'LightsOn', 'label' => 'Lights on', 'group' => 'status', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 70],
+            // vehicle.airConditioning
+            'climateState' => ['ident' => 'ClimateState', 'label' => 'Air conditioning state', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'airConditioningAtUnlock' => ['ident' => 'AirConditioningAtUnlock', 'label' => 'Air conditioning at unlock', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
+            'targetTemperature' => ['ident' => 'TargetTemperature', 'label' => 'Target temperature', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_FLOAT], 'position' => 30],
+            'targetTemperatureUnit' => ['ident' => 'TargetTemperatureUnit', 'label' => 'Target temperature unit', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'windowHeatingEnabled' => ['ident' => 'WindowHeatingEnabled', 'label' => 'Window heating enabled', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 50],
+            'windowHeatingFront' => ['ident' => 'WindowHeatingFront', 'label' => 'Front window heating', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_STRING], 'position' => 60],
+            'windowHeatingRear' => ['ident' => 'WindowHeatingRear', 'label' => 'Rear window heating', 'group' => 'airConditioning', 'types' => [VARIABLETYPE_STRING], 'position' => 70],
 
-            'soc' => ['ident' => 'StateOfCharge', 'label' => 'State of charge', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10],
-            'charging' => ['ident' => 'Charging', 'label' => 'Charging', 'group' => 'charging', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
-            'chargingState' => ['ident' => 'ChargingState', 'label' => 'Charging state', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
-            'chargeType' => ['ident' => 'ChargeType', 'label' => 'Charge type', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
-            'chargePower' => ['ident' => 'ChargePower', 'label' => 'Charging power', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 50],
-            'targetSoc' => ['ident' => 'TargetSOC', 'label' => 'Charging limit', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 60],
-            'chargeMode' => ['ident' => 'ChargeMode', 'label' => 'Charging mode', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_STRING], 'position' => 70],
-            'fullyChargedAt' => ['ident' => 'FullyChargedAt', 'label' => 'Fully charged at', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 80],
+            // vehicle.charging
+            'atSavedChargingLocation' => ['ident' => 'AtSavedChargingLocation', 'label' => 'At saved charging location', 'group' => 'charging', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
+            'autoUnlockPlug' => ['ident' => 'AutoUnlockPlug', 'label' => 'Automatic plug unlock', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'batteryCareTargetSoc' => ['ident' => 'BatteryCareTargetSOC', 'label' => 'Battery care target', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30],
+            'batteryCareMode' => ['ident' => 'BatteryCareMode', 'label' => 'Battery care mode', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'maxChargeCurrentAc' => ['ident' => 'MaxChargeCurrentAC', 'label' => 'Maximum AC charging current', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
+            'chargeMode' => ['ident' => 'ChargeMode', 'label' => 'Charging mode', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
+            'targetSoc' => ['ident' => 'TargetSOC', 'label' => 'Charging limit', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 70],
+            'range' => ['ident' => 'Range', 'label' => 'Range', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 80],
+            'soc' => ['ident' => 'StateOfCharge', 'label' => 'State of charge', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 90],
+            'chargePower' => ['ident' => 'ChargePower', 'label' => 'Charging power', 'group' => 'charging', 'types' => [VARIABLETYPE_FLOAT], 'position' => 100],
+            'fullyChargedAt' => ['ident' => 'FullyChargedAt', 'label' => 'Fully charged at', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 110],
+            'remainingChargingTime' => ['ident' => 'RemainingChargingTime', 'label' => 'Remaining charging time', 'group' => 'charging', 'types' => [VARIABLETYPE_INTEGER], 'position' => 120],
+            'chargingState' => ['ident' => 'ChargingState', 'label' => 'Charging state', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 130],
+            'chargeType' => ['ident' => 'ChargeType', 'label' => 'Charge type', 'group' => 'charging', 'types' => [VARIABLETYPE_STRING], 'position' => 140],
 
-            'climate' => ['ident' => 'Climate', 'label' => 'Air conditioning', 'group' => 'climate', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
-            'targetTemperature' => ['ident' => 'TargetTemperature', 'label' => 'Target temperature', 'group' => 'climate', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20],
+            // vehicle.odometer
+            'mileage' => ['ident' => 'Mileage', 'label' => 'Mileage', 'group' => 'odometer', 'types' => [VARIABLETYPE_INTEGER], 'position' => 10],
 
-            'latitude' => ['ident' => 'Latitude', 'label' => 'Latitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 10],
-            'longitude' => ['ident' => 'Longitude', 'label' => 'Longitude', 'group' => 'location', 'types' => [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], 'position' => 20],
+            // vehicle.parkingPosition
+            'parkingState' => ['ident' => 'ParkingState', 'label' => 'Parking state', 'group' => 'parkingPosition', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'parkingAddress' => ['ident' => 'ParkingAddress', 'label' => 'Parking address', 'group' => 'parkingPosition', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'latitude' => ['ident' => 'Latitude', 'label' => 'Latitude', 'group' => 'parkingPosition', 'types' => [VARIABLETYPE_FLOAT], 'position' => 30],
+            'longitude' => ['ident' => 'Longitude', 'label' => 'Longitude', 'group' => 'parkingPosition', 'types' => [VARIABLETYPE_FLOAT], 'position' => 40],
 
-            'apiKeyWarning' => ['ident' => 'ApiKeyWarning', 'label' => 'API key warning', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
-            'apiKeyExpiresAt' => ['ident' => 'ApiKeyExpiresAtVar', 'label' => 'API key valid until', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 20],
-            'requestsRemaining' => ['ident' => 'RequestsRemaining', 'label' => 'API requests remaining', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30],
-            'partialErrors' => ['ident' => 'PartialErrors', 'label' => 'API partial errors', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
-            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50],
-            'pendingCommands' => ['ident' => 'PendingCommands', 'label' => 'Pending commands', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
-            'commandStatus' => ['ident' => 'CommandStatus', 'label' => 'Command status', 'group' => 'diagnostics', 'types' => [VARIABLETYPE_STRING], 'position' => 70]
+            // vehicle.status.overall
+            'doorsLocked' => ['ident' => 'DoorsLocked', 'label' => 'Door lock status', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'locked' => ['ident' => 'Locked', 'label' => 'Vehicle lock status', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'doorsOpen' => ['ident' => 'DoorsOpen', 'label' => 'Doors', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
+            'windowsOpen' => ['ident' => 'WindowsOpen', 'label' => 'Windows', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'lightsOn' => ['ident' => 'LightsOn', 'label' => 'Lights', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
+            'reliableLockStatus' => ['ident' => 'ReliableLockStatus', 'label' => 'Reliable lock status', 'group' => 'statusOverall', 'types' => [VARIABLETYPE_STRING], 'position' => 60],
+
+            // vehicle.status.detail
+            'sunroofOpen' => ['ident' => 'SunroofOpen', 'label' => 'Sunroof', 'group' => 'statusDetail', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'trunkOpen' => ['ident' => 'TrunkOpen', 'label' => 'Trunk', 'group' => 'statusDetail', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'bonnetOpen' => ['ident' => 'BonnetOpen', 'label' => 'Bonnet', 'group' => 'statusDetail', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
+
+            // Module-generated data
+            'climate' => ['ident' => 'Climate', 'label' => 'Air conditioning', 'group' => 'module', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 10],
+            'charging' => ['ident' => 'Charging', 'label' => 'Charging', 'group' => 'module', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 20],
+            'lastUpdate' => ['ident' => 'LastUpdate', 'label' => 'Last update', 'group' => 'module', 'types' => [VARIABLETYPE_INTEGER], 'position' => 30],
+            'apiKeyWarning' => ['ident' => 'ApiKeyWarning', 'label' => 'API key warning', 'group' => 'module', 'types' => [VARIABLETYPE_BOOLEAN], 'position' => 40],
+            'apiKeyExpiresAt' => ['ident' => 'ApiKeyExpiresAtVar', 'label' => 'API key valid until', 'group' => 'module', 'types' => [VARIABLETYPE_INTEGER], 'position' => 50],
+            'requestsRemaining' => ['ident' => 'RequestsRemaining', 'label' => 'API requests remaining', 'group' => 'module', 'types' => [VARIABLETYPE_INTEGER], 'position' => 60],
+            'partialErrors' => ['ident' => 'PartialErrors', 'label' => 'API partial errors', 'group' => 'module', 'types' => [VARIABLETYPE_STRING], 'position' => 70],
+            'newApiFeatures' => ['ident' => 'NewApiFeatures', 'label' => 'New API functions', 'group' => 'module', 'types' => [VARIABLETYPE_INTEGER], 'position' => 80],
+            'pendingCommands' => ['ident' => 'PendingCommands', 'label' => 'Pending commands', 'group' => 'module', 'types' => [VARIABLETYPE_INTEGER], 'position' => 90],
+            'commandStatus' => ['ident' => 'CommandStatus', 'label' => 'Command status', 'group' => 'module', 'types' => [VARIABLETYPE_STRING], 'position' => 100],
+
+            // Locally decoded VIN data
+            'vinWmi' => ['ident' => 'VINWMI', 'label' => 'VIN WMI', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'vinVds' => ['ident' => 'VINVDS', 'label' => 'VIN VDS', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'vinVis' => ['ident' => 'VINVIS', 'label' => 'VIN VIS', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
+            'vinManufacturer' => ['ident' => 'VINManufacturer', 'label' => 'VIN manufacturer', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'vinCountry' => ['ident' => 'VINCountry', 'label' => 'VIN country', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
+            'vinModel' => ['ident' => 'VINModel', 'label' => 'VIN model', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 60],
+            'vinModelCode' => ['ident' => 'VINModelCode', 'label' => 'VIN model code', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 70],
+            'vinBody' => ['ident' => 'VINBody', 'label' => 'VIN body', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 80],
+            'vinSteering' => ['ident' => 'VINSteering', 'label' => 'VIN steering', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 90],
+            'vinDrive' => ['ident' => 'VINDrive', 'label' => 'VIN drive', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 100],
+            'vinPower' => ['ident' => 'VINPower', 'label' => 'VIN power', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 110],
+            'vinVariant' => ['ident' => 'VINVariant', 'label' => 'VIN variant', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 120],
+            'vinRestraint' => ['ident' => 'VINRestraint', 'label' => 'VIN restraint system', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 130],
+            'vinModelYear' => ['ident' => 'VINModelYear', 'label' => 'VIN model year', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 140],
+            'vinPlant' => ['ident' => 'VINPlant', 'label' => 'VIN production plant', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 150],
+            'vinSerialNumber' => ['ident' => 'VINSerialNumber', 'label' => 'VIN serial number', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 160],
+            'vinCheckDigit' => ['ident' => 'VINCheckDigit', 'label' => 'VIN check digit', 'group' => 'vin', 'types' => [VARIABLETYPE_STRING], 'position' => 170],
+
+            // Module-generated API vehicle data
+            'apiCarType' => ['ident' => 'APICarType', 'label' => 'API vehicle type', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 10],
+            'apiPrimaryEngineType' => ['ident' => 'APIPrimaryEngineType', 'label' => 'API primary engine type', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 20],
+            'apiSecondaryEngineType' => ['ident' => 'APISecondaryEngineType', 'label' => 'API secondary engine type', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 30],
+            'apiSupportedFeatures' => ['ident' => 'APISupportedFeatures', 'label' => 'API supported features', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 40],
+            'apiAvailableChargeModes' => ['ident' => 'APIAvailableChargeModes', 'label' => 'API available charging modes', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 50],
+            'apiRemoteOperations' => ['ident' => 'APIRemoteOperations', 'label' => 'API remote operations', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 60],
+            'apiAuxiliaryHeatingState' => ['ident' => 'APIAuxiliaryHeatingState', 'label' => 'API auxiliary heating state', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 70],
+            'apiActiveVentilationState' => ['ident' => 'APIActiveVentilationState', 'label' => 'API active ventilation state', 'group' => 'apiVehicle', 'types' => [VARIABLETYPE_STRING], 'position' => 80]
         ];
     }
 

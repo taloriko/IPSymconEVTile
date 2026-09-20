@@ -1,252 +1,289 @@
 # EV Tile
 
-Herstellerunabhängiges Symcon-Gerätemodul zur strukturierten Darstellung bereits vorhandener Fahrzeugdaten mit nativen Symcon-Objekten. Eine EV-Tile-Instanz verwendet genau eine frei wählbare Fahrzeug-Instanz als Datenquelle.
+EV Tile ist ein Symcon-Gerätemodul zur nativen Darstellung vorhandener Fahrzeugdaten. Eine EV-Tile-Instanz verwendet genau eine Fahrzeug-Instanz als Quelle und erzeugt daraus auf Wunsch eine strukturierte Ansicht mit Links auf die Originalvariablen.
 
-## Konzept
+## 1. Referenzstand
 
-EV Tile ist bewusst von Fahrzeug-APIs getrennt. Das Modul führt keine eigenen Hersteller- oder Cloud-Abfragen durch. Stattdessen werden vorhandene Symcon-Variablen einer Quellinstanz anhand stabiler technischer Idents zugeordnet.
+Diese Version ist vollständig auf **MySkoda 1.5** abgestimmt.
 
-**Version 1.1 unterstützt MySkoda 1.1 vollständig als Referenz-Datenquelle.** Andere Fahrzeugmodule können über die manuelle Variablenzuordnung verwendet werden.
+Die automatische Zuordnung erwartet die aktuellen MySkoda-1.5-Idents und -Variablentypen. Eine Abwärtskompatibilität zu älteren MySkoda-Variablentypen ist ausdrücklich nicht vorgesehen.
 
-EV Tile verwendet **keine eigene HTML-Visualisierung**. Die Ausgabe besteht aus nativen Gruppeninstanzen, Links auf Originalvariablen und optional einem nativen Symcon-Diagramm.
+Aktuell sind **73 Variablen** im Mapping definiert. Dazu gehören direkte API-Daten, von MySkoda erzeugte Modulwerte, optionale FIN-Daten und die zusätzlichen API-Fahrzeugdaten.
 
-## Voraussetzungen
+## 2. Konzept
+
+EV Tile:
+
+- führt keine Fahrzeug- oder Cloud-Abfragen aus,
+- erstellt keine Spiegelvariablen,
+- kopiert keine Fahrzeugwerte,
+- ordnet Variablen über exakte technische Idents zu,
+- prüft den erwarteten Variablentyp,
+- erlaubt eine manuelle Zuordnung je Datenpunkt,
+- verlinkt die Originalvariablen in eine native Symcon-Objektstruktur.
+
+Dadurch bleiben Darstellung, Icon, Profil und vorhandene Aktionen der MySkoda-Variablen erhalten.
+
+## 3. Voraussetzungen
 
 - Symcon **8.1 oder neuer**
-- eine Fahrzeug- oder Quellinstanz mit Fahrzeugdaten als Symcon-Variablen
-- für das optionale Ladediagramm: die verwendeten Quellvariablen müssen im Archive Control geloggt werden
+- MySkoda **1.5**
+- eine konfigurierte MySkoda-Instanz als Datenquelle
+- optional aktivierte MySkoda-Detail-/Diagnosevariablen
+- optional aktivierte FIN-Informationsvariablen
+- Archive Control mit Logging der Diagrammvariablen, wenn das Ladediagramm genutzt wird
 
-## Installation und erste Einrichtung
+## 4. Einrichtung
 
-1. Repository `https://github.com/taloriko/IPSymconEVTile` im Module Control hinzufügen.
-2. Instanz **EV Tile** anlegen.
-3. Unter **Datenquelle** die Fahrzeug-Instanz auswählen.
-4. Konfiguration übernehmen.
-5. Den kompakten **Zuordnungsstatus** prüfen.
-6. Fehlende Werte bei Bedarf unter **Manuelle Variablenzuordnung** ergänzen.
-7. Optional **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren.
-8. Optional **Ladediagramm anlegen** aktivieren.
+1. EV-Tile-Instanz anlegen.
+2. Unter **Datenquelle** die MySkoda-Instanz auswählen.
+3. Konfiguration übernehmen.
+4. Den **Zuordnungsstatus** prüfen.
+5. Bei Bedarf fehlende Datenpunkte manuell zuordnen.
+6. **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren.
+7. Optional das **Ladediagramm** aktivieren.
 
-Die Instanz kann auch ohne gewählte Datenquelle angelegt werden und bleibt dann inaktiv.
+## 5. Zuordnungsstatus
 
-## Automatische Zuordnung
+Die Konfiguration zeigt kompakt:
 
-Die automatische Zuordnung verwendet ausschließlich den **exakten technischen Objekt-Ident**.
+- automatisch erkannt
+- manuell zugeordnet
+- fehlt
 
-Es werden keine Variablennamen wie `Ladezustand`, `SOC`, `Battery` oder andere frei änderbare Bezeichnungen ausgewertet.
+Ein automatischer Treffer wird nur verwendet, wenn:
 
-Für jeden Datenpunkt wird geprüft:
+1. der technische Ident exakt stimmt,
+2. der Variablentyp dem MySkoda-1.5-Modell entspricht,
+3. der Treffer eindeutig ist.
 
-1. Existiert unter der gewählten Quellinstanz eine Variable mit exakt dem erwarteten Ident?
-2. Entspricht ihr Variablentyp dem erwarteten Typ?
-3. Ist der Treffer eindeutig?
+## 6. Native Objektstruktur
 
-Nur dann wird die Variable automatisch verwendet. Bei keinem Treffer, falschem Typ oder Mehrdeutigkeit bleibt der Datenpunkt unzugeordnet und kann manuell ausgewählt werden.
-
-Die Suche umfasst die Quellinstanz und bis zu zwei darunterliegende Ebenen aus Kategorien oder Instanzen.
-
-## Zuordnungsstatus
-
-Direkt unter der Datenquelle zeigt die Instanzkonfiguration die kompakte Übersicht:
-
-- 🟢 **Automatisch erkannt: X**
-- 🔵 **Manuell zugeordnet: X**
-- 🟠 **Fehlt: X**
-- **X von 32 Datenpunkten verfügbar**
-
-Welcher Datenpunkt automatisch erkannt wurde oder noch fehlt, ist im Bereich **Manuelle Variablenzuordnung** an den farbigen Markierungen und der automatisch gefundenen Objekt-ID erkennbar.
-
-## Manuelle Variablenzuordnung
-
-Jeder Datenpunkt besitzt eine optionale manuelle `SelectVariable`-Zuordnung.
-
-Priorität:
-
-```text
-manuelle Zuordnung > automatische Ident-Zuordnung
-```
-
-Ist eine manuelle Auswahl ungültig, nicht mehr vorhanden oder vom falschen Variablentyp, fällt EV Tile automatisch auf die Ident-Zuordnung zurück.
-
-Eine manuelle Auswahl beeinflusst nur diesen einen Datenpunkt.
-
-## Unterstützte MySkoda-Datenpunkte in Version 1.1
-
-Version 1.1 definiert **32 feste Datenpunkte** als Referenzmodell für MySkoda 1.1.
-
-| Gruppe | Ident | Anzeige | Erwarteter Typ |
-|---|---|---|---|
-| Fahrzeug | `VehicleName` | Fahrzeugname | String |
-| Fahrzeug | `LicensePlate` | Kennzeichen | String |
-| Fahrzeug | `Range` | Reichweite | Integer / Float |
-| Fahrzeug | `Mileage` | Kilometerstand | Integer / Float |
-| Fahrzeug | `ParkingState` | Parkstatus | String |
-| Fahrzeug | `LastUpdate` | Letzte Aktualisierung | Integer |
-| Status | `Locked` | Verriegelt | Boolean |
-| Status | `DoorsOpen` | Türen offen | Boolean |
-| Status | `WindowsOpen` | Fenster offen | Boolean |
-| Status | `TrunkOpen` | Kofferraum offen | Boolean |
-| Status | `BonnetOpen` | Motorhaube offen | Boolean |
-| Status | `SunroofOpen` | Schiebedach offen | Boolean |
-| Status | `LightsOn` | Licht an | Boolean |
-| Laden | `StateOfCharge` | Ladezustand | Integer / Float |
-| Laden | `Charging` | Laden | Boolean |
-| Laden | `ChargingState` | Ladestatus | String |
-| Laden | `ChargeType` | Ladeart | String |
-| Laden | `ChargePower` | Ladeleistung | Integer / Float |
-| Laden | `TargetSOC` | Ladelimit | Integer / Float |
-| Laden | `ChargeMode` | Lademodus | Integer / String |
-| Laden | `FullyChargedAt` | Vollgeladen um | Integer |
-| Klima | `Climate` | Klimatisierung | Boolean |
-| Klima | `TargetTemperature` | Solltemperatur | Integer / Float |
-| Standort | `Latitude` | Breitengrad | Integer / Float |
-| Standort | `Longitude` | Längengrad | Integer / Float |
-| API | `ApiKeyWarning` | API-Key Warnung | Boolean |
-| API | `ApiKeyExpiresAtVar` | API-Key gültig bis | Integer |
-| API | `RequestsRemaining` | Verbleibende API-Anfragen | Integer |
-| API | `PartialErrors` | API-Teilfehler | String |
-| API | `NewApiFeatures` | Neue API-Funktionen | Integer |
-| API | `PendingCommands` | Ausstehende Befehle | Integer |
-| API | `CommandStatus` | Befehlsstatus | String |
-
-Die beiden Datenpunkte `PendingCommands` und `CommandStatus` werden vom MySkoda-Modul nur angelegt, wenn dort die Detail- und Diagnosevariablen aktiviert sind. Fehlen diese Variablen, bleiben die entsprechenden EV-Tile-Zuordnungen einfach leer.
-
-## Native Objektstruktur
-
-Die Option **Gruppierte Fahrzeugansicht mit Links anlegen** ist standardmäßig **aus**, da EV Tile hierfür zusätzliche Symcon-Objekte anlegt.
-
-Nach ausdrücklicher Aktivierung entsteht unterhalb der EV-Tile-Instanz abhängig von den verfügbaren Daten ungefähr:
+Die Struktur wird in folgender Reihenfolge erzeugt:
 
 ```text
 EV Tile
+├── Übersicht
 ├── Fahrzeug
-│   ├── Fahrzeugname
-│   ├── Kennzeichen
-│   ├── Ladezustand
-│   ├── Reichweite
-│   ├── Kilometerstand
-│   ├── Verriegelt
-│   ├── Parkstatus
-│   ├── Laden
-│   ├── Ladeleistung
-│   ├── Ladelimit
-│   ├── Klimatisierung
-│   ├── Solltemperatur
-│   └── Letzte Aktualisierung
-├── Status
+├── Klimatisierung
 ├── Laden
-├── Klima
-├── Standort
-├── API
-│   ├── API-Key Warnung
-│   ├── API-Key gültig bis
-│   ├── Verbleibende API-Anfragen
-│   ├── API-Teilfehler
-│   ├── Neue API-Funktionen
-│   ├── Ausstehende Befehle
-│   └── Befehlsstatus
+├── Kilometerstand
+├── Parkposition
+├── Fahrzeugstatus
+├── Fahrzeugdetails
+├── Moduldaten
+├── FIN-Daten
+├── API-Fahrzeugdaten
 └── Diagramme
 ```
 
-### Fahrzeug als Übersicht
+Nicht vorhandene Bereiche werden nicht mit leeren Links gefüllt.
 
-Die Gruppe **Fahrzeug** ist die kompakte Gesamtübersicht. Sie enthält zusätzlich zu den Fahrzeugstammdaten die wichtigsten Werte aus Laden, Status und Klima.
+### 6.1 Übersicht
 
-Damit eignet sie sich als einzelnes Element in der Kachelvisualisierung.
+**Übersicht** ist die kompakte Zusammenfassung für die Kachelvisualisierung. Die Reihenfolge ist bewusst nach Relevanz und nicht nach API-Struktur gewählt:
 
-### API-Gruppe
+1. Ladezustand
+2. Reichweite
+3. Laden
+4. Ladestatus
+5. Ladeleistung
+6. Ladelimit
+7. Restladezeit
+8. Klimatisierung
+9. Klimatisierungsstatus
+10. Solltemperatur
+11. Kilometerstand
+12. zuverlässiger Verriegelungsstatus
+13. Türen
+14. Fenster
+15. Parkstatus
+16. letzte Aktualisierung
+17. Fahrzeugname
+18. Kennzeichen
 
-Die Gruppe **API** fasst die technischen MySkoda-Diagnosewerte zusammen. In Version 1.1 gehören dazu zusätzlich die Befehlsdiagnosewerte `PendingCommands` und `CommandStatus`.
+Fehlt ein Datenpunkt in der MySkoda-Instanz, wird er in der Übersicht ausgelassen.
 
-Bei einem Update von EV Tile 1.0 auf 1.1 wird die von EV Tile angelegte Standardgruppe **Diagnose** in **API** umbenannt. Wurde die Gruppe vom Benutzer bereits selbst umbenannt, bleibt der Benutzername unverändert.
+### 6.2 API-Reihenfolge
 
-### Links bleiben original
+Nach der Übersicht folgen alle direkt aus der Fahrzeugantwort abgeleiteten Werte in derselben fachlichen Reihenfolge wie die MySkoda-API-/Kompatibilitätsdokumentation:
 
-Alle angezeigten Werte sind Links auf die Originalvariablen. EV Tile:
+#### Fahrzeug – `vehicle`
 
-- legt keine Spiegelvariablen an,
-- kopiert keine Werte,
-- vergibt den Links **keinen eigenen Anzeigenamen**,
-- vergibt den Links **kein eigenes Icon**.
+- `VehicleName`
+- `LicensePlate`
+- `VIN`
 
-Dadurch übernimmt die Darstellung den Namen, das Profil, das Icon und vorhandene Aktionen der Zielvariable.
+#### Klimatisierung – `vehicle.airConditioning`
 
-Nur die Gruppeninstanzen selbst erhalten bei ihrer Erstanlage einen sinnvollen Namen, ein Icon und eine Position. Bestehende Benutzeranpassungen werden später nicht fortlaufend überschrieben.
+- `ClimateState`
+- `AirConditioningAtUnlock`
+- `TargetTemperature`
+- `TargetTemperatureUnit`
+- `WindowHeatingEnabled`
+- `WindowHeatingFront`
+- `WindowHeatingRear`
 
-Wenn sich eine Zuordnung ändert, darf EV Tile einen selbst angelegten Link auf die neue Zielvariable umstellen, solange der Benutzer das Linkziel nicht zwischenzeitlich selbst verändert hat.
+#### Laden – `vehicle.charging`
 
-## Kachelvisualisierung
+- `AtSavedChargingLocation`
+- `AutoUnlockPlug`
+- `BatteryCareTargetSOC`
+- `BatteryCareMode`
+- `MaxChargeCurrentAC`
+- `ChargeMode`
+- `TargetSOC`
+- `Range`
+- `StateOfCharge`
+- `ChargePower`
+- `FullyChargedAt`
+- `RemainingChargingTime`
+- `ChargingState`
+- `ChargeType`
 
-EV Tile hat keinen eigenen HTML-Kacheltyp (`SetVisualizationType(0)`). Die native Objektstruktur wird von Symcon selbst visualisiert.
+#### Kilometerstand – `vehicle.odometer`
 
-Für die gewünschte kompakte Ansicht:
+- `Mileage`
 
-1. EV Tile in der Kachelvisualisierung hinzufügen.
-2. Darstellung **Einzelnes Element** wählen.
-3. Als Element **Fahrzeug** auswählen.
+#### Parkposition – `vehicle.parkingPosition`
 
-Die Einstellung **Einzelnes Element → Fahrzeug** ist Bestandteil der Symcon-Visualisierungskonfiguration. Sie kann vom PHP-Modul nicht zuverlässig vorbelegt werden und wird deshalb einmalig vom Benutzer in der Visualisierung gewählt.
+- `ParkingState`
+- `ParkingAddress`
+- `Latitude`
+- `Longitude`
 
-## Diagramme
+#### Fahrzeugstatus – `vehicle.status.overall`
 
-Die Option **Ladediagramm anlegen** ist standardmäßig **aus**.
+- `DoorsLocked`
+- `Locked`
+- `DoorsOpen`
+- `WindowsOpen`
+- `LightsOn`
+- `ReliableLockStatus`
 
-Nach ausdrücklicher Aktivierung legt EV Tile einmalig die Gruppe **Diagramme** und darin das native Symcon-Diagramm **Ladeübersicht** an.
+#### Fahrzeugdetails – `vehicle.status.detail`
 
-Das Diagramm enthält:
+- `SunroofOpen`
+- `TrunkOpen`
+- `BonnetOpen`
 
-- `StateOfCharge` – Ladezustand auf der linken Achse
-- `TargetSOC` – Ladelimit auf der linken Achse
-- `ChargePower` – Ladeleistung auf der rechten Achse
+Zeitstempel oder API-Strukturen ohne eigene Symcon-Variable erhalten keinen künstlichen Platzhalter.
 
-Alle drei Datenpunkte müssen zugeordnet sein. Fehlt einer davon, wird kein unvollständiges Diagramm erzeugt und EV Tile schreibt einen Hinweis ins Instanz-Log.
+## 7. Moduldaten
 
-### Archivierung
+Nach den API-Daten folgen die von MySkoda selbst erzeugten Bedien- und Diagnosewerte:
 
-Ein Symcon-Diagramm benötigt archivierte Quelldaten für einen zeitlichen Verlauf. EV Tile verändert die Archive-Control-Einstellungen **nicht selbstständig**.
+- `Climate`
+- `Charging`
+- `LastUpdate`
+- `ApiKeyWarning`
+- `ApiKeyExpiresAtVar`
+- `RequestsRemaining`
+- `PartialErrors`
+- `NewApiFeatures`
+- `PendingCommands`
+- `CommandStatus`
 
-Beim MySkoda-Modul kann die Archivierung von Ladezustand, Ladelimit und Ladeleistung ausdrücklich aktiviert werden. Alternativ kann der Benutzer das Logging direkt im Archive Control konfigurieren.
+## 8. FIN-Daten
 
-Die Diagrammkonfiguration wird nur bei der Erstanlage gesetzt. Spätere Anpassungen des Benutzers werden nicht bei jedem `ApplyChanges()` überschrieben.
+Wenn die FIN-Informationsvariablen in MySkoda angelegt wurden, übernimmt EV Tile anschließend:
 
-## Objekt- und Referenzverhalten
+- `VINWMI`
+- `VINVDS`
+- `VINVIS`
+- `VINManufacturer`
+- `VINCountry`
+- `VINModel`
+- `VINModelCode`
+- `VINBody`
+- `VINSteering`
+- `VINDrive`
+- `VINPower`
+- `VINVariant`
+- `VINRestraint`
+- `VINModelYear`
+- `VINPlant`
+- `VINSerialNumber`
+- `VINCheckDigit`
 
-Die gewählte Quellinstanz und alle effektiv verwendeten Variablen werden mit `RegisterReference()` referenziert.
+## 9. API-Fahrzeugdaten
 
-EV Tile verändert keine Properties der Fahrzeug-Instanz, ruft kein `IPS_ApplyChanges()` auf fremden Instanzen auf und verändert keine Archivierung ohne Benutzeraktion.
+Danach folgen die von MySkoda aus der Public-API-Antwort abgeleiteten Zusatzinformationen:
 
-## Instanzstatus
+- `APICarType`
+- `APIPrimaryEngineType`
+- `APISecondaryEngineType`
+- `APISupportedFeatures`
+- `APIAvailableChargeModes`
+- `APIRemoteOperations`
+- `APIAuxiliaryHeatingState`
+- `APIActiveVentilationState`
+
+## 10. Typänderungen gegenüber älteren MySkoda-Ständen
+
+Folgende Statusvariablen werden ausschließlich im aktuellen MySkoda-1.5-Typ **String** akzeptiert:
+
+- `Locked`
+- `DoorsOpen`
+- `WindowsOpen`
+- `TrunkOpen`
+- `BonnetOpen`
+- `SunroofOpen`
+- `LightsOn`
+
+Auch `DoorsLocked` und `ReliableLockStatus` sind String-Statuswerte.
+
+Es existiert kein Boolean-Fallback für ältere Versionen.
+
+## 11. Manuelle Variablenzuordnung
+
+Für jeden Datenpunkt kann eine Variable manuell gewählt werden. Die manuelle Auswahl überschreibt die automatische Zuordnung nur für diesen Datenpunkt.
+
+Ist die Auswahl ungültig oder vom falschen Typ, verwendet EV Tile wieder die automatische Zuordnung.
+
+## 12. Kachelvisualisierung
+
+EV Tile verwendet `SetVisualizationType(0)` und besitzt keine eigene HTML-Visualisierung.
+
+Für die kompakte Fahrzeugansicht:
+
+1. EV Tile in die Kachelvisualisierung aufnehmen.
+2. **Einzelnes Element** auswählen.
+3. **Übersicht** als Element wählen.
+
+## 13. Ladediagramm
+
+Optional wird unter **Diagramme** ein natives Symcon-Diagramm **Ladeübersicht** erzeugt:
+
+- `StateOfCharge` – linke Achse
+- `TargetSOC` – linke Achse
+- `ChargePower` – rechte Achse
+
+Alle drei Variablen müssen vorhanden sein. EV Tile verändert die Archive-Control-Konfiguration nicht.
+
+## 14. Objekt- und Referenzverhalten
+
+Die Quellinstanz und alle verwendeten Variablen werden mit `RegisterReference()` referenziert.
+
+EV Tile erzeugt ausschließlich Gruppen, Links und optional ein Diagramm. Es verändert keine Properties der MySkoda-Instanz und führt dort kein `IPS_ApplyChanges()` aus.
+
+Die Positionen der von EV Tile verwalteten Gruppen und Links werden beim Anwenden der Konfiguration entsprechend der aktuellen Struktur gesetzt.
+
+## 15. Instanzstatus
 
 | Code | Bedeutung |
 |---:|---|
-| `102` | Fahrzeugdaten erfolgreich zugeordnet |
+| `102` | Fahrzeugdaten zugeordnet |
 | `104` | keine Fahrzeug-Instanz ausgewählt |
 | `201` | ausgewählte Fahrzeug-Instanz existiert nicht |
 | `202` | keine unterstützten Fahrzeugvariablen gefunden |
 
-## Fehlersuche
+## 16. Datenschutz und externe Dienste
 
-- **Automatisch erkannt: 0** – richtige Fahrzeug-Instanz und technische Idents prüfen.
-- **Fehlt trotz passendem Ident** – Variablentyp prüfen.
-- **Mehrdeutige Zuordnung** – gewünschten Wert manuell zuordnen.
-- **Ausstehende Befehle/Befehlsstatus fehlen** – im MySkoda-Modul die Detail- und Diagnosevariablen aktivieren.
-- **Objektstruktur fehlt** – Option **Gruppierte Fahrzeugansicht mit Links anlegen** aktivieren und übernehmen.
-- **Diagramm fehlt** – `StateOfCharge`, `TargetSOC` und `ChargePower` müssen vorhanden sein.
-- **Diagramm ohne Verlauf** – Logging der drei Quellvariablen im Archive Control prüfen.
-- **Fahrzeug wird nicht automatisch als Kachelelement gewählt** – in der Kachelvisualisierung einmalig **Einzelnes Element → Fahrzeug** einstellen.
+EV Tile führt keine externen Netzwerkaufrufe durch. Alle Daten stammen aus der lokalen Symcon-Installation.
 
-## Datenschutz und externe Dienste
-
-EV Tile kommuniziert mit **keinem externen Dienst**. Alle Daten stammen aus der lokalen Symcon-Installation. Der Netzwerkzugriff auf einen Fahrzeughersteller ist Aufgabe des jeweils verwendeten Fahrzeugmoduls.
-
-## Hilfe und Quellcode
-
-- Repository: `https://github.com/taloriko/IPSymconEVTile`
-- Dokumentation: `https://github.com/taloriko/IPSymconEVTile/blob/main/EVTile/README.md`
-- Issues: `https://github.com/taloriko/IPSymconEVTile/issues`
-
-## Lizenz
+## 17. Lizenz
 
 Copyright © 2026 **taloriko**.
 
-Dieses Projekt wird unter der [MIT-Lizenz](../LICENSE) veröffentlicht.
+Veröffentlicht unter der [MIT-Lizenz](../LICENSE).
